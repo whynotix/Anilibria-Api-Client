@@ -10,18 +10,7 @@ from enum import Enum
 from .codegen import openapi_models as _generated
 
 _GENERATED_TYPE_EXPORTS = (
-    "AdsBannerPlacement",
-    "AdsStatisticsEventType",
-    "AnimeReleaseMemberRole",
-    "AnimeReleasePublishDay",
-    "TorrentCodec",
-    "TorrentColor",
-    "TorrentMemberRole",
-    "TorrentQuality",
-    "TorrentType",
-    "UserFavoriteFilterSorting",
-    "UserSocialType",
-    "VideoOriginType"
+
 )
 
 for _name in _GENERATED_TYPE_EXPORTS:
