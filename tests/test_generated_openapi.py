@@ -54,14 +54,12 @@ def test_legacy_public_api_is_preserved() -> None:
 
 
 def test_public_exports_include_known_names() -> None:
-    public_models = import_module("anilibria_api_client.models")
-    public_responses = import_module("anilibria_api_client.responses")
-    public_response_models = import_module("anilibria_api_client.response_models")
-    public_types = import_module("anilibria_api_client.types")
+    models = import_module("anilibria_api_client.types.models")
+    responses = import_module("anilibria_api_client.types.responses")
+    types = import_module("anilibria_api_client.types")
 
-    assert "Release" in public_models.__all__
-    assert "ReleaseCollection" in public_models.__all__
-    assert "AnimeRelease" in public_responses.__all__
-    assert "AnimeRelease" in public_response_models.__all__
-    assert "CollectionType" in public_types.__all__
-    assert "ContentType" in public_types.__all__
+    assert "Release" in models.__all__
+    assert "ReleaseCollection" in models.__all__
+    assert "AnimeRelease" in responses.__all__
+    assert "CollectionType" in types.__all__
+    assert "ContentType" in types.__all__
