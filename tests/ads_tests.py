@@ -10,7 +10,7 @@ class Test(IsolatedAsyncioTestCase):
         api = AsyncAnilibriaAPI()
 
         vasts = await api.ads.vasts()
-        vasts_chain = await api.ads.vasts_chain()
+        vasts_chain = await api.ads.vasts_manifest_xml()
 
         pprint(object=(
             vasts, 

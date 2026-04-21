@@ -30,6 +30,8 @@ async def main():
     data = data.get("data")[:limit]
 
     print("Вот что я нашел по запросу {}".format(args.name))
+
+    description = None
     i = 1
 
     for item in data:
@@ -54,7 +56,8 @@ async def main():
         i += 1
 
     print(f"\nВсего найдено {len(data)} записей")
-    return description
+
+    return description if description is not None else False
 
 if __name__ == "__main__":
     asyncio.run(main())
