@@ -4,25 +4,17 @@ on:
   pull_request:
     paths:
       - ".github/workflows/openapi-sync.yml"
-      - "scripts/**"
-      - "anilibria_api_client/_generated/**"
-      - "anilibria_api_client/models.py"
-      - "anilibria_api_client/types.py"
+      - "anilibria_api_client/**"
       - "pyproject.toml"
       - "tests/test_generated_openapi.py"
-      - "schema/**"
   push:
     branches:
       - main
     paths:
       - ".github/workflows/openapi-sync.yml"
-      - "scripts/**"
-      - "anilibria_api_client/_generated/**"
-      - "anilibria_api_client/models.py"
-      - "anilibria_api_client/types.py"
+      - "anilibria_api_client/**"
       - "pyproject.toml"
       - "tests/test_generated_openapi.py"
-      - "schema/**"
   schedule:
     - cron: "0 5 * * 1"
   workflow_dispatch:
@@ -48,8 +40,17 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e .[dev]
 
-      - name: Check schema drift
-        run: python scripts/check_schema_drift.py
+      - name: Check if generated code is up to date
+        id: check
+        run: |
+          python anilibria_api_client/types/scripts/check_codegen.py
+        continue-on-error: true
+
+      - name: Fail if out of date
+        if: steps.check.outcome == 'failure'
+        run: |
+          echo "Generated OpenAPI artifacts are out of date"
+          exit 1
 
       - name: Run smoke tests
         run: python -m pytest tests/test_generated_openapi.py -q
@@ -75,36 +76,26 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Update OpenAPI schema and generate models
-        run: python scripts/update_openapi_models.py
+      - name: Update schema and generated code
+        run: python anilibria_api_client/types/scripts/update_openapi_models.py
 
       - name: Run smoke tests
         run: python -m pytest tests/test_generated_openapi.py -q
 
       - name: Check for changes
-        id: check_changes
+        id: changes
         run: |
-          if [[ -n $(git status -s) ]]; then
-            echo "changes=true" >> $GITHUB_OUTPUT
-            echo "Changes detected:"
-            git status -s
-          else
-            echo "changes=false" >> $GITHUB_OUTPUT
+          if git diff --quiet; then
+            echo "no_changes=true" >> $GITHUB_OUTPUT
             echo "No changes detected"
+          else
+            echo "no_changes=false" >> $GITHUB_OUTPUT
+            echo "Changes detected:"
+            git status --short
           fi
 
-      - name: Commit and push changes
-        if: steps.check_changes.outputs.changes == 'true'
-        run: |
-          git add schema/anilibria-v1.openapi.json
-          git add anilibria_api_client/_generated/openapi_models.py
-          git add anilibria_api_client/models.py
-          git add anilibria_api_client/types.py
-          git commit -m "chore: refresh OpenAPI generated artifacts [skip ci]"
-          git push origin HEAD:codex/openapi-sync
-
       - name: Create pull request
-        if: steps.check_changes.outputs.changes == 'true'
+        if: steps.changes.outputs.no_changes == 'false'
         uses: peter-evans/create-pull-request@v7
         with:
           branch: codex/openapi-sync
@@ -118,9 +109,7 @@ jobs:
             - Regenerated `_generated/openapi_models.py`
             - Updated public facades (`models.py`, `types.py`)
 
-            This PR was automatically generated. Review and merge if tests pass.
+            This PR was automatically generated. Review and merge if tests pass.**Автоматическое обновление OpenAPI**
           commit-message: "chore: refresh OpenAPI generated artifacts [skip ci]"
           delete-branch: true
-          labels: |
-            automated
-            openapi-sync
+          labels: automated, openapi-sync
