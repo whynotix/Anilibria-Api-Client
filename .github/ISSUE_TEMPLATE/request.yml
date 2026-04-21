@@ -1,1 +1,25 @@
-null
+name: Enchancement
+description: New function or another one
+
+labels: [ "enhancement" ]
+assignees: "whynotix"
+
+body:
+  - type: textarea
+    attributes:
+      label: Describe new functions
+      description: ...
+      placeholder: |
+        ...
+
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Code example
+      description: Code example
+      placeholder: |
+        ...
+
+      render: python3

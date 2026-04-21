@@ -1,17 +1,27 @@
-name: Enchancement
-description: New function or another one
+name: Bugtracker
+description: ...
 
-labels: [ "enhancement" ]
-assignees: "whynotix"
+labels: [ "bug", "help wanted" ]
+assignees: [ "whynotix" ]
 
 body:
+  - type: checkboxes
+    attributes:
+      label: Checklist
+      options:
+        - label: I think this a module bug
+          required: true
+        - label: I dont found any issues like my problem
+          required: true
+        - label: I install latest module version
+          required: true
+
   - type: textarea
     attributes:
-      label: Describe new functions
-      description: ...
+      label: explain, describe bug and actions to get this bug
+      description:
       placeholder: |
-        ...
-
+        When i [...], module return [...]
     validations:
       required: true
 
@@ -21,5 +31,11 @@ body:
       description: Code example
       placeholder: |
         ...
-
       render: python3
+
+  - type: textarea
+    attributes:
+      label: Logs
+      description: Console logs (if you have it)
+      placeholder: |
+        ...
