@@ -35,8 +35,6 @@ async def async_download(url: str, output_path: str = None, filename: str = "out
     """
     Позволяет скачивать серию через URL (https://cache-rfn.libria.fun/videos/media/)
 
-    Пожалуйста, используйте этот метод с осторожностью, ответ от тех. поддержки: Если вы будете злоупотреблять — мы вас заблокируем, имейте ввиду
-    
     ffmpeg required
 
     :param url: Ссылка на m3u8 плейлист

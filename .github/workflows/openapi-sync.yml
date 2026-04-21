@@ -1,0 +1,105 @@
+name: OpenAPI Sync
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/openapi-sync.yml"
+      - "anilibria_api_client/**"
+      - "pyproject.toml"
+      - "anilibria_api_client/types/scripts/**"
+      - "tests/test_generated_openapi.py"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/openapi-sync.yml"
+      - "anilibria_api_client/**"
+      - "pyproject.toml"
+      - "anilibria_api_client/types/scripts/**"
+      - "tests/test_generated_openapi.py"
+  schedule:
+    - cron: "0 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  validate-generated:
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .[dev]
+
+      - name: Check generated artifacts
+        run: python anilibria_api_client/types/scripts/check_schema_drift.py
+
+      - name: Run smoke tests
+        run: python -m pytest tests/test_generated_openapi.py -q
+
+  refresh-generated:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .[dev]
+
+      - name: Update schema and generated code
+        run: python anilibria_api_client/types/scripts/update_openapi_models.py
+
+      - name: Run smoke tests
+        run: python -m pytest tests/test_generated_openapi.py -q
+
+      - name: Detect diff
+        id: diff
+        shell: bash
+        run: |
+          if git diff --quiet -- \
+            anilibria_api_client/types/schema/anilibria-v1.openapi.json \
+            anilibria_api_client/types/codegen \
+            anilibria_api_client/types/models.py \
+            anilibria_api_client/types/responses.py \
+            anilibria_api_client/types/__init__.py \
+            anilibria_api_client/models.py \
+            anilibria_api_client/responses.py \
+            anilibria_api_client/response_models.py; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create pull request
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: codex/openapi-sync
+          commit-message: "chore: refresh AniLiberty OpenAPI generated artifacts"
+          title: "chore: refresh AniLiberty OpenAPI generated artifacts"
+          body: |
+            Automated OpenAPI refresh.
+
+            - downloaded the latest AniLiberty schema
+            - regenerated models, enums, and low-level methods
+            - updated public facades and compatibility shims
+            - ran generated smoke tests
+          delete-branch: true

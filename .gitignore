@@ -6,3 +6,5 @@ venv
 .venv
 dist
 *.egg-info
+pytest-*
+_generated
