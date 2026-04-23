@@ -70,6 +70,8 @@ _GENERATED_RESPONSE_EXPORTS = (
     "MediaVideos",
     "MediaVideosVideoContent",
     "MediaVideosVideoOrigin",
+    "MediaVideosVideoOriginType",
+    "Model422Content",
     "Pagination",
     "Request",
     "TeamsTeam",
