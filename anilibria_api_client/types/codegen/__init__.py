@@ -1,2 +1,0 @@
-"""Generated AniLiberty OpenAPI code."""
-

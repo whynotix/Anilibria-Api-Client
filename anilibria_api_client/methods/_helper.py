@@ -1,5 +1,5 @@
 from typing import Dict, Any
-from ..types import (
+from ..models import (
     AgeRating, 
     SortType, 
     ContentType, 
