@@ -36,4 +36,4 @@ jobs:
 
       - name: Run tests with pytest
         run: |
-          pytest -q tests/ -s
+          poetry run pytest -q tests/ -s
