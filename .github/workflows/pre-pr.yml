@@ -3,8 +3,9 @@ name: pre-pr check
 on:
   pull_request:
     branches: [ main, dev ]
-  push:
-    branches: [ main ]
+    paths:
+      - "anilibria_api_client/**"
+      - "tests/**"
 
 jobs:
   pre-pr-tests:
