@@ -1,5 +1,5 @@
 import m3u8_To_MP4
-import os          # Path / Makedir
+import os  # Path / Makedir
 import aiofiles
 
 from .api_client import AsyncAnilibriaAPI
@@ -19,19 +19,22 @@ async def auth(api: AsyncAnilibriaAPI, login: str, password: str) -> AsyncAnilib
         res = await api.accounts.users_auth_login(login=login, password=password)
 
         init_params = {
-            'base_url': api.base_url,
-            'proxy': api.proxy,
-            'proxy_auth': api.proxy_auth,
-            'proxy_headers': api.proxy_headers.copy() if api.proxy_headers else None
+            "base_url": api.base_url,
+            "proxy": api.proxy,
+            "proxy_auth": api.proxy_auth,
+            "proxy_headers": api.proxy_headers.copy() if api.proxy_headers else None,
         }
 
-        init_params['authorization'] = f"Bearer {res.get('token')}"
+        init_params["authorization"] = f"Bearer {res.get('token')}"
 
         return AsyncAnilibriaAPI(**init_params)
     except AnilibriaException as e:
         raise AnilibriaException("Auth error!")
 
-async def async_download(url: str, output_path: str = None, filename: str = "output.mp4"):
+
+async def async_download(
+    url: str, output_path: str = None, filename: str = "output.mp4"
+):
     """
     Позволяет скачивать серию через URL (https://cache-rfn.libria.fun/videos/media/)
 
@@ -54,25 +57,25 @@ async def async_download(url: str, output_path: str = None, filename: str = "out
         os.makedirs(mp4_file_dir, exist_ok=True)
 
     return m3u8_To_MP4.multithread_download(
-        m3u8_uri=url,
-        mp4_file_dir=mp4_file_dir,
-        mp4_file_name=mp4_file_name
+        m3u8_uri=url, mp4_file_dir=mp4_file_dir, mp4_file_name=mp4_file_name
     )
-    
+
+
 async def download_torrent_file(torrent_bytes: bytes, filename: str):
     """
     Асинхронно сохраняет .torrent файл
-    
+
     :param torrent_bytes: бинарные данные torrent-файла
     :param filename: имя файла
     """
-    if not filename.endswith('.torrent'):
-        filename += '.torrent'
-    
-    async with aiofiles.open(filename, 'wb') as f:
+    if not filename.endswith(".torrent"):
+        filename += ".torrent"
+
+    async with aiofiles.open(filename, "wb") as f:
         await f.write(torrent_bytes)
-    
-    return True 
+
+    return True
+
 
 async def auto_paginate(api_function, limit: int = 100, *args, **kwargs):
     """
@@ -80,28 +83,28 @@ async def auto_paginate(api_function, limit: int = 100, *args, **kwargs):
 
     Может работать не со всеми методами, проверяйте что-бы в ответе было поле data, но я думаю по подобию этой функции не доставит проблем переписывание пары строк на свой лад
 
-    :param api_function: Функция API 
+    :param api_function: Функция API
     :param limit: Этот параметр нужен сугубо для того, что-бы можно было вызывать методы где ограничение на limit поле
     :param *args: аргументы для API функции
     :param **kwargs: аргументы для API функции (кваргсов пока нигде нет)
     :return: Все данные которые есть на всех страницах
     """
     page = 1
-    
+
     all_results = []
 
     while True:
         response = await api_function(*args, page=page, limit=limit, **kwargs)
 
         if response:
-            if response['data']:
+            if response["data"]:
                 items = response.get("data")
                 for item in items:
                     all_results.append(item)
 
-        if len(response['data']) < limit:
+        if len(response["data"]) < limit:
             break
 
         page += 1
 
-    return all_results 
+    return all_results

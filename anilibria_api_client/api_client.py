@@ -10,7 +10,7 @@ from .methods import (
     AnimeMethod,
     AppMethod,
     MediaMethod,
-    TeamsMethod
+    TeamsMethod,
 )
 
 logging.basicConfig(level=logging.ERROR)
@@ -20,18 +20,18 @@ class AsyncAnilibriaAPI(AsyncBaseAPI):
     """
     Асинхронный клиент для работы с AnilibriaAPI, базируется на AsyncBaseAPI (base_api/api_class.py)
     """
-    def __init__(
-            self,
-            base_url: str = "https://anilibria.top/api/v1",
-            token: str | None = None,
 
-            proxy: Optional[str] = None,
-            proxy_auth: Optional[aiohttp.BasicAuth] = None,
-            proxy_headers: Optional[Dict[str, str]] = None,
-        ):
+    def __init__(
+        self,
+        base_url: str = "https://anilibria.top/api/v1",
+        token: str | None = None,
+        proxy: Optional[str] = None,
+        proxy_auth: Optional[aiohttp.BasicAuth] = None,
+        proxy_headers: Optional[Dict[str, str]] = None,
+    ):
         """
         Инициализация асинхронного API клиента.
-        
+
         :param base_url: Базовый URL API
         :param token: Токен для авторизации (Bearer)
 
@@ -44,9 +44,15 @@ class AsyncAnilibriaAPI(AsyncBaseAPI):
             "Content-Type": "application/json",
         }
         if token is not None:
-            headers['Authorization'] = f"Bearer {token}"
+            headers["Authorization"] = f"Bearer {token}"
 
-        super().__init__(base_url=base_url, headers=headers, proxy=proxy, proxy_auth=proxy_auth, proxy_headers=proxy_headers)
+        super().__init__(
+            base_url=base_url,
+            headers=headers,
+            proxy=proxy,
+            proxy_auth=proxy_auth,
+            proxy_headers=proxy_headers,
+        )
 
         self.accounts = AccountsMethod(api=self)
         self.ads = AdsMethod(api=self)
@@ -58,15 +64,15 @@ class AsyncAnilibriaAPI(AsyncBaseAPI):
     async def execute(
         self,
         endpoint: str,
-        method: str = 'GET',
+        method: str = "GET",
         data: Optional[Union[Dict[str, Any], str, bytes]] = None,
         json_data: Optional[Dict[str, Any]] = None,
         headers: Optional[Dict[str, str]] = None,
-        **kwargs
+        **kwargs,
     ) -> Union[Dict[str, Any], str, bytes]:
         """
         Создание своего уникального запроса
-        
+
         :param method: Метод используемый для запроса, например GET (обязательно)
         :param endpoint: Конечная точка API (обязательно)
         :param data: Тело запроса
@@ -76,5 +82,6 @@ class AsyncAnilibriaAPI(AsyncBaseAPI):
         :return: Ответ от API
         """
 
-        return await self._request(method, endpoint, data=data, json_data=json_data, headers=headers, **kwargs)
-    
+        return await self._request(
+            method, endpoint, data=data, json_data=json_data, headers=headers, **kwargs
+        )

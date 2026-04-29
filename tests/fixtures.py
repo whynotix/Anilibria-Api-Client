@@ -8,6 +8,7 @@ from anilibria_api_client.api_client import AsyncAnilibriaAPI
 
 dotenv.load_dotenv()
 
+
 @pytest_asyncio.fixture()
 async def anilibria_api_client() -> typing.AsyncGenerator[AsyncAnilibriaAPI]:
     token = os.getenv("ANILIBRIA_API_TOKEN")
