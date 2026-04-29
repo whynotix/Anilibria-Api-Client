@@ -4,25 +4,17 @@ on:
   pull_request:
     paths:
       - ".github/workflows/openapi-sync.yml"
-      - "scripts/**"
-      - "anilibria_api_client/_generated/**"
-      - "anilibria_api_client/models.py"
-      - "anilibria_api_client/types.py"
+      - "anilibria_api_client/types/**"
       - "pyproject.toml"
       - "tests/test_generated_openapi.py"
-      - "schema/**"
   push:
     branches:
       - main
     paths:
       - ".github/workflows/openapi-sync.yml"
-      - "scripts/**"
-      - "anilibria_api_client/_generated/**"
-      - "anilibria_api_client/models.py"
-      - "anilibria_api_client/types.py"
+      - "anilibria_api_client/types/**"
       - "pyproject.toml"
       - "tests/test_generated_openapi.py"
-      - "schema/**"
   schedule:
     - cron: "0 5 * * 1"
   workflow_dispatch:
@@ -48,19 +40,16 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e .[dev]
 
-      - name: Check schema drift
+      - name: Check if generated code is up to date
         id: check
         run: |
-          python scripts/check_schema_drift.py
+          python anilibria_api_client/types/scripts/check_codegen.py
         continue-on-error: true
 
-      - name: Show drift details
+      - name: Fail if out of date
         if: steps.check.outcome == 'failure'
         run: |
-          echo "⚠️ Schema drift detected!"
-          echo "The generated code doesn't match the current OpenAPI schema."
-          echo "Run 'python scripts/update_openapi_models.py' locally to regenerate."
-          git diff --stat
+          echo "Generated OpenAPI artifacts are out of date"
           exit 1
 
       - name: Run smoke tests
@@ -82,52 +71,45 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e .[dev]
 
-      - name: Update OpenAPI schema and generate models
-        run: python scripts/update_openapi_models.py
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Update schema and generated code
+        run: python anilibria_api_client/types/scripts/update_codegen.py
 
       - name: Run smoke tests
         run: python -m pytest tests/test_generated_openapi.py -q
 
-      - name: Detect changes
-        id: diff
-        shell: bash
+      - name: Check for changes
+        id: changes
         run: |
-          if git diff --quiet -- \
-            schema/anilibria-v1.openapi.json \
-            anilibria_api_client/_generated/openapi_models.py \
-            anilibria_api_client/models.py \
-            anilibria_api_client/types.py; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
+          if git diff --quiet; then
+            echo "no_changes=true" >> $GITHUB_OUTPUT
+            echo "No changes detected"
           else
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-            echo "Changes detected in:"
-            git diff --name-only
+            echo "no_changes=false" >> $GITHUB_OUTPUT
+            echo "Changes detected:"
+            git status --short
           fi
 
       - name: Create pull request
-        if: steps.diff.outputs.changed == 'true'
+        if: steps.changes.outputs.no_changes == 'false'
         uses: peter-evans/create-pull-request@v7
         with:
           branch: codex/openapi-sync
-          commit-message: "chore: refresh OpenAPI generated artifacts"
+          base: main
           title: "chore: refresh OpenAPI generated artifacts"
           body: |
-            Automated OpenAPI refresh.
+            Automated OpenAPI refresh
 
-            ## What changed:
-            - Fetched latest OpenAPI schema from AniLiberty
-            - Regenerated models in `_generated/openapi_models.py`
+            ## Changes
+            - Updated OpenAPI schema from AniLiberty
+            - Regenerated `_generated/openapi_models.py`
             - Updated public facades (`models.py`, `types.py`)
-            - Smoke tests passed
 
-            ## Files updated:
-            - `schema/anilibria-v1.openapi.json`
-            - `anilibria_api_client/_generated/openapi_models.py`
-            - `anilibria_api_client/models.py`
-            - `anilibria_api_client/types.py`
-
-            ⚠️ **Note**: Manual changes in `methods/` and legacy DTOs are preserved.
+            This PR was automatically generated. Review and merge if tests pass.
+          commit-message: "chore: refresh OpenAPI generated artifacts [skip ci]"
           delete-branch: true
-          labels: |
-            automated-pr
-            openapi-sync
+          labels: automated, openapi-sync

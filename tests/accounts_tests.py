@@ -25,7 +25,7 @@ class Help:
 
 class Test(IsolatedAsyncioTestCase):
     async def test(self):
-        """token = await Help().auth()
+        token = await Help().auth()
         api_auth = AsyncAnilibriaAPI(authorization=f"Bearer {token}")
         releases = await api_auth.accounts.users_me_collections_releases_post(
             release_collection=ReleaseCollection(
@@ -55,10 +55,11 @@ class Test(IsolatedAsyncioTestCase):
         )
 
         pprint(releases)
-        pprint(releases_get)"""
+        pprint(releases_get)
 
-        api = AsyncAnilibriaAPI()
+        """api = AsyncAnilibriaAPI()
         result = await api.accounts.otp_get("123")
+        pprint(result)"""
         
 
 if __name__ == "__main__":
