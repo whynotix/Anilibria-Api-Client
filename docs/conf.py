@@ -11,46 +11,47 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+import datetime
 import os
 import sys
-import datetime
+
 
 sys.path.insert(0, os.path.abspath(".."))
 
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.viewcode',
-    'sphinx.ext.napoleon'
+    "sphinx.ext.autodoc",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.napoleon",
 ]
 
 autodoc_default_options = {
-    'members': True,
-    'undoc-members': True,
-    'private-members': False,
-    'special-members': '__init__',
-    'inherited-members': True,
-    'show-inheritance': True
+    "members": True,
+    "undoc-members": True,
+    "private-members": False,
+    "special-members": "__init__",
+    "inherited-members": True,
+    "show-inheritance": True,
 }
 
 autodoc_mock_imports = [
-    'aiohttp', 
-    'websockets',
-    'ffmpeg',
-    'ffmpeg.asyncio',
-    'typing',
-    'anilibria_api_client.base_api',
-    'anilibria_api_client.methods',
-    'anilibria_api_client.methods._helper',
-    'anilibria_api_client.methods._libria',
-    'anilibria_api_client.methods.accounts',
-    'anilibria_api_client.methods.ads', 
-    'anilibria_api_client.methods.anime',
-    'anilibria_api_client.methods.app',
-    'anilibria_api_client.methods.media',
-    'anilibria_api_client.methods.teams'
+    "aiohttp",
+    "websockets",
+    "ffmpeg",
+    "ffmpeg.asyncio",
+    "typing",
+    "anilibria_api_client.base_api",
+    "anilibria_api_client.methods",
+    "anilibria_api_client.methods._helper",
+    "anilibria_api_client.methods._libria",
+    "anilibria_api_client.methods.accounts",
+    "anilibria_api_client.methods.ads",
+    "anilibria_api_client.methods.anime",
+    "anilibria_api_client.methods.app",
+    "anilibria_api_client.methods.media",
+    "anilibria_api_client.methods.teams",
 ]
 
-autodoc_member_order = 'groupwise'
+autodoc_member_order = "groupwise"
 autodoc_inherit_docstrings = True
 napoleon_use_ivar = True
 napoleon_google_docstring = True

@@ -1,0 +1,39 @@
+name: pre-pr check
+
+on:
+  pull_request:
+    branches: [ main, dev ]
+  push:
+    branches: [ main ]
+
+jobs:
+  pre-pr-tests:
+    name: Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        run: |
+          poetry install --with dev
+
+      - name: Create .env file
+        run: |
+          echo "ANILIBRIA_API_TOKEN=${{ secrets.ANILIBRIA_API_TOKEN }}" > .env
+
+      - name: Run tests with pytest
+        run: |
+          poetry run pytest -q tests/ -s

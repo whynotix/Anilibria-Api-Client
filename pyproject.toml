@@ -7,7 +7,7 @@ name = "anilibria-api-client"
 version = "0.2.3"
 description = "Python async API wrapper for AniLibria Swagger"
 authors = [
-    {name = "semen-bol", email = "syoma.bolotov@bk.ru"}
+    {name = "whynotix", email = "syoma.bolotov@bk.ru"}
 ]
 license = {text = "MIT"}
 readme = "README.md"
@@ -16,7 +16,7 @@ dependencies = [
     "aiohttp==3.12.15",
     "aiofiles==24.1.0",
     "pydantic==2.11.7",
-    "m3u8-To-MP4==0.1.11"
+    "m3u8-To-MP4==0.1.11",
 ]
 
 [project.urls]
@@ -40,6 +40,95 @@ docs = [
     "readthedocs-sphinx-search>=0.1.2",
 ]
 dev = [
-    "datamodel-code-generator>=0.31.0,<1.0.0",
     "pytest>=8.4.0,<9.0.0",
+    "dotenv (>=0.9.9,<0.10.0)",
+    "pytest-asyncio (>=1.3.0,<2.0.0)"
 ]
+
+[tool.poetry]
+name = "anilibria_api_client"
+version = "0.2.3"
+description = "Client for Anilibria API v1.0"
+authors = ["whynotix <syoma.bolotov@bk.ru>"]
+license = "MIT"
+package-mode=false
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+pytest = "8.4.0,<9.0.0"
+dotenv = ">=0.9.9,<0.10.0"
+pytest-asyncio = ">=1.3.0,<2.0.0"
+
+[tool.ruff]
+target-version = "py313"
+line-length = 79
+extend-exclude = [
+    "database"
+]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "COM812",   # Conflicts with the formatter
+    "ISC001",   # Conflicts with the formatter
+    "PT001",    # https://github.com/astral-sh/ruff/issues/8796#issuecomment-1825907715
+    "PT023",    # https://github.com/astral-sh/ruff/issues/8796#issuecomment-1825907715
+
+    # Thoughtful ignores
+    "N818",     # Exception name should be named with an Error suffix
+    "D",        # Missing docstring
+    "TRY401",   # Redundant exception object included in `logging.exception` call
+    "EM101",    # Checks for the use of string literals in exception constructors
+    "ANN401",   # Dissallows `Any` in typing
+    "BLE001",   # Dissallows `except Exception`
+    "PLR0913",  # Too many arguments in function definition
+    "PERF401",  # Use a list comprehension to create a transformed list
+    "S324",     # Dissallows hashlib.md5 usage
+    "ARG001",   # Unused function argument
+    "ARG002",   # Unused method argument
+    "TRY003",   # Avoid specifying long messages outside the exception class
+    "ARG005",   # Unused lambda argument
+    "PTH",      # Force using pathlib
+    "FBT003",   # Boolean value as argument
+    "SIM117",   # Use a single `with` statement with multiple contexts
+    "B008",     # Do not perform function call in argument defaults
+
+    # Temp ignores, need to handle this
+    "ANN201",
+    "TD",
+    "FIX",
+    "G004",
+    "INP001",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"**/__init__.py" = [
+    "F401", # Imported but unused
+    "F403", # Wildcard imports
+    "E402", # Module level import not at top of file
+]
+"**/env.py" = [
+    "ERA001", # Found commented-out code
+]
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.format]
+quote-style = "double"
+docstring-code-line-length = 72
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = "double"
+
+[tool.mypy]
+disallow_untyped_defs = true # Functions need to be annotated
+warn_unused_ignores = true
