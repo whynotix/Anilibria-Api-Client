@@ -1,9 +1,9 @@
-import aiohttp
 import logging
+from typing import Any
+
+import aiohttp
 
 from .base_api.api_class import AsyncBaseAPI
-from typing import Optional, Dict, Any, Optional, Union
-
 from .methods import (
     AccountsMethod,
     AdsMethod,
@@ -12,6 +12,7 @@ from .methods import (
     MediaMethod,
     TeamsMethod,
 )
+
 
 logging.basicConfig(level=logging.ERROR)
 
@@ -25,10 +26,10 @@ class AsyncAnilibriaAPI(AsyncBaseAPI):
         self,
         base_url: str = "https://anilibria.top/api/v1",
         token: str | None = None,
-        proxy: Optional[str] = None,
-        proxy_auth: Optional[aiohttp.BasicAuth] = None,
-        proxy_headers: Optional[Dict[str, str]] = None,
-    ):
+        proxy: str | None = None,
+        proxy_auth: aiohttp.BasicAuth | None = None,
+        proxy_headers: dict[str, str] | None = None,
+    ) -> None:
         """
         Инициализация асинхронного API клиента.
 
@@ -65,11 +66,11 @@ class AsyncAnilibriaAPI(AsyncBaseAPI):
         self,
         endpoint: str,
         method: str = "GET",
-        data: Optional[Union[Dict[str, Any], str, bytes]] = None,
-        json_data: Optional[Dict[str, Any]] = None,
-        headers: Optional[Dict[str, str]] = None,
+        data: dict[str, Any] | str | bytes | None = None,
+        json_data: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
         **kwargs,
-    ) -> Union[Dict[str, Any], str, bytes]:
+    ) -> dict[str, Any] | str | bytes:
         """
         Создание своего уникального запроса
 
@@ -83,5 +84,10 @@ class AsyncAnilibriaAPI(AsyncBaseAPI):
         """
 
         return await self._request(
-            method, endpoint, data=data, json_data=json_data, headers=headers, **kwargs
+            method,
+            endpoint,
+            data=data,
+            json_data=json_data,
+            headers=headers,
+            **kwargs,
         )

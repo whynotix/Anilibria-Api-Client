@@ -1,7 +1,8 @@
+
+from anilibria_api_client.models import Release
+
+from ._helper import create_filters_from_release, validate_filters
 from ._libria import BaseMethod
-from ._helper import validate_filters, create_filters_from_release
-from ..models import Release
-from typing import Optional, List
 
 
 class AnimeMethod(BaseMethod):
@@ -20,7 +21,9 @@ class AnimeMethod(BaseMethod):
         validated_f_args = await validate_filters(params=params)
         final_body = {**body, **validated_f_args}
 
-        return await self._api.get("/anime/catalog/releases", params=final_body)
+        return await self._api.get(
+            "/anime/catalog/releases", params=final_body
+        )
 
     async def catalog_releases_post(self, params: Release):
         """
@@ -37,7 +40,9 @@ class AnimeMethod(BaseMethod):
         filters = await create_filters_from_release(params)
         final_body = {**body, **filters}
 
-        return await self._api.post("/anime/catalog/releases", json_data=final_body)
+        return await self._api.post(
+            "/anime/catalog/releases", json_data=final_body
+        )
 
     async def catalog_references_age_ratings(self):
         """
@@ -55,13 +60,17 @@ class AnimeMethod(BaseMethod):
         """
         Возвращает список возможных статусов озвучки релиза в каталоге
         """
-        return await self._api.get("/anime/catalog/references/production-statuses")
+        return await self._api.get(
+            "/anime/catalog/references/production-statuses"
+        )
 
     async def catalog_references_publish_statuses(self):
         """
         Возвращает список возможных статусов выхода релиза в каталоге
         """
-        return await self._api.get("/anime/catalog/references/publish-statuses")
+        return await self._api.get(
+            "/anime/catalog/references/publish-statuses"
+        )
 
     async def catalog_references_seasons(self):
         """
@@ -88,7 +97,7 @@ class AnimeMethod(BaseMethod):
         return await self._api.get("/anime/catalog/references/years")
 
     async def franchises(
-        self, include: Optional[str] = None, exclude: Optional[str] = None
+        self, include: str | None = None, exclude: str | None = None
     ):
         """
         Возвращает список франшиз
@@ -102,8 +111,8 @@ class AnimeMethod(BaseMethod):
     async def franchises_franchiseId(
         self,
         franchiseId: str,
-        include: Optional[str] = None,
-        exclude: Optional[str] = None,
+        include: str | None = None,
+        exclude: str | None = None,
     ):
         """
         Возвращает данные франшизы по Id
@@ -121,9 +130,9 @@ class AnimeMethod(BaseMethod):
 
     async def franchises_random(
         self,
-        limit: Optional[int] = None,
-        include: Optional[str] = None,
-        exclude: Optional[str] = None,
+        limit: int | None = None,
+        include: str | None = None,
+        exclude: str | None = None,
     ):
         """
         Возвращает список случайных франшиз.
@@ -139,8 +148,8 @@ class AnimeMethod(BaseMethod):
     async def franchises_release_releaseId(
         self,
         releaseId: str,
-        include: Optional[str] = None,
-        exclude: Optional[str] = None,
+        include: str | None = None,
+        exclude: str | None = None,
     ):
         """
         Возвращает список франшиз, в которых участвует релиз
@@ -157,7 +166,7 @@ class AnimeMethod(BaseMethod):
         return await self._api.get(endpoint=endpoint, params=params)
 
     async def genres(
-        self, include: Optional[str] = None, exclude: Optional[str] = None
+        self, include: str | None = None, exclude: str | None = None
     ):
         """
         Возвращает список всех жанров
@@ -170,7 +179,10 @@ class AnimeMethod(BaseMethod):
         return await self._api.get("/anime/genres", params=params)
 
     async def genres_genreId(
-        self, genreId: int, include: Optional[str] = None, exclude: Optional[str] = None
+        self,
+        genreId: int,
+        include: str | None = None,
+        exclude: str | None = None,
     ):
         """
         Возвращает список всех жанров
@@ -188,9 +200,9 @@ class AnimeMethod(BaseMethod):
 
     async def genres_random(
         self,
-        limit: Optional[int] = None,
-        include: Optional[str] = None,
-        exclude: Optional[str] = None,
+        limit: int | None = None,
+        include: str | None = None,
+        exclude: str | None = None,
     ):
         """
         Возвращает список случайных жанров
@@ -206,10 +218,10 @@ class AnimeMethod(BaseMethod):
     async def genres_genreId_releases(
         self,
         genreId: int,
-        page: Optional[int] = None,
-        limit: Optional[int] = None,
-        include: Optional[str] = None,
-        exclude: Optional[str] = None,
+        page: int | None = None,
+        limit: int | None = None,
+        include: str | None = None,
+        exclude: str | None = None,
     ):
         """
         Возвращает список всех релизов жанра
@@ -220,7 +232,12 @@ class AnimeMethod(BaseMethod):
         :param include: Поля для включения
         :param exclude: Поля для исключения
         """
-        params = {"page": page, "limit": limit, "include": include, "exclude": exclude}
+        params = {
+            "page": page,
+            "limit": limit,
+            "include": include,
+            "exclude": exclude,
+        }
 
         endpoint = self._api.build_endpoint_with_params(
             "/anime/genres/{genreId}/releases", genreId=genreId
@@ -229,9 +246,9 @@ class AnimeMethod(BaseMethod):
 
     async def releases_latest(
         self,
-        limit: Optional[int] = None,
-        include: Optional[str] = None,
-        exclude: Optional[str] = None,
+        limit: int | None = None,
+        include: str | None = None,
+        exclude: str | None = None,
     ):
         """
         Возвращает данные по последним релизам
@@ -246,9 +263,9 @@ class AnimeMethod(BaseMethod):
 
     async def releases_random(
         self,
-        limit: Optional[int] = None,
-        include: Optional[str] = None,
-        exclude: Optional[str] = None,
+        limit: int | None = None,
+        include: str | None = None,
+        exclude: str | None = None,
     ):
         """
         Возвращает данные по случайным релизам
@@ -263,10 +280,10 @@ class AnimeMethod(BaseMethod):
 
     async def releases_recommended(
         self,
-        limit: Optional[int] = None,
-        release_id: Optional[int] = None,
-        include: Optional[str] = None,
-        exclude: Optional[str] = None,
+        limit: int | None = None,
+        release_id: int | None = None,
+        include: str | None = None,
+        exclude: str | None = None,
     ):
         """
         Возвращает данные по рекомендованным релизам
@@ -283,16 +300,18 @@ class AnimeMethod(BaseMethod):
             "exclude": exclude,
         }
 
-        return await self._api.get("/anime/releases/recommended", params=params)
+        return await self._api.get(
+            "/anime/releases/recommended", params=params
+        )
 
     async def releases_list(
         self,
-        ids: List[int],
-        aliases: List[str],
-        page: Optional[int] = None,
-        limit: Optional[int] = None,
-        include: Optional[str] = None,
-        exclude: Optional[str] = None,
+        ids: list[int],
+        aliases: list[str],
+        page: int | None = None,
+        limit: int | None = None,
+        include: str | None = None,
+        exclude: str | None = None,
     ):
         """
         Возвращает данные по списку релизов
@@ -318,8 +337,8 @@ class AnimeMethod(BaseMethod):
     async def releases_idOrAlias(
         self,
         idOrAlias: str,
-        include: Optional[str] = None,
-        exclude: Optional[str] = None,
+        include: str | None = None,
+        exclude: str | None = None,
     ):
         """
         Возвращает данные по релизу
@@ -338,8 +357,8 @@ class AnimeMethod(BaseMethod):
     async def releases_idOrAlias_members(
         self,
         idOrAlias: str,
-        include: Optional[str] = None,
-        exclude: Optional[str] = None,
+        include: str | None = None,
+        exclude: str | None = None,
     ):
         """
         Возвращает данные по участникам релиза
@@ -358,8 +377,8 @@ class AnimeMethod(BaseMethod):
     async def releases_idOrAlias_episodes_timecodes(
         self,
         idOrAlias: str,
-        include: Optional[str] = None,
-        exclude: Optional[str] = None,
+        include: str | None = None,
+        exclude: str | None = None,
     ):
         """
         Возвращает данные по всем существующим таймкодам просмотра эпизодов релиза. Имеет 1-2-x минутный кэш.
@@ -371,15 +390,16 @@ class AnimeMethod(BaseMethod):
         params = {"include": include, "exclude": exclude}
 
         endpoint = self._api.build_endpoint_with_params(
-            "/anime/releases/{idOrAlias}/episodes/timecodes", idOrAlias=idOrAlias
+            "/anime/releases/{idOrAlias}/episodes/timecodes",
+            idOrAlias=idOrAlias,
         )
         return await self._api.get(endpoint, params)
 
     async def releases_episodes_releaseEpisodeId(
         self,
         releaseEpisodeId: str,
-        include: Optional[str] = None,
-        exclude: Optional[str] = None,
+        include: str | None = None,
+        exclude: str | None = None,
     ):
         """
         Возвращает данные по эпизоду
@@ -399,8 +419,8 @@ class AnimeMethod(BaseMethod):
     async def releases_episodes_releaseEpisodeId_timecode(
         self,
         releaseEpisodeId: str,
-        include: Optional[str] = None,
-        exclude: Optional[str] = None,
+        include: str | None = None,
+        exclude: str | None = None,
     ):
         """
         Возвращает данные по просмотру указанного эпизода авторизованным пользователем. Имеет 1-2-x минутный кэш.
@@ -418,7 +438,7 @@ class AnimeMethod(BaseMethod):
         return await self._api.get(endpoint, params)
 
     async def schedule_now(
-        self, include: Optional[str] = None, exclude: Optional[str] = None
+        self, include: str | None = None, exclude: str | None = None
     ):
         """
         Возвращает список релизов в расписании на текущую дату
@@ -431,7 +451,7 @@ class AnimeMethod(BaseMethod):
         return await self._api.get("/anime/schedule/now", params=params)
 
     async def schedule_week(
-        self, include: Optional[str] = None, exclude: Optional[str] = None
+        self, include: str | None = None, exclude: str | None = None
     ):
         """
         Возвращает список релизов в расписании на текущую неделю
@@ -445,10 +465,10 @@ class AnimeMethod(BaseMethod):
 
     async def torrents(
         self,
-        page: Optional[int] = None,
-        limit: Optional[int] = None,
-        include: Optional[str] = None,
-        exclude: Optional[str] = None,
+        page: int | None = None,
+        limit: int | None = None,
+        include: str | None = None,
+        exclude: str | None = None,
     ):
         """
         Возвращает данные по последним торрентам
@@ -458,15 +478,20 @@ class AnimeMethod(BaseMethod):
         :param include: Поля для включения
         :param exclude: Поля для исключения
         """
-        params = {"page": page, "limit": limit, "include": include, "exclude": exclude}
+        params = {
+            "page": page,
+            "limit": limit,
+            "include": include,
+            "exclude": exclude,
+        }
 
         return await self._api.get("/anime/torrents", params=params)
 
     async def torrents_hashOrId(
         self,
         hashOrId: str,
-        include: Optional[str] = None,
-        exclude: Optional[str] = None,
+        include: str | None = None,
+        exclude: str | None = None,
     ):
         """
         Возвращает данные по последним торрентам
@@ -482,7 +507,9 @@ class AnimeMethod(BaseMethod):
         )
         return await self._api.get(endpoint, params)
 
-    async def torrents_hashOrId_file(self, hashOrId: str, pk: Optional[str] = None):
+    async def torrents_hashOrId_file(
+        self, hashOrId: str, pk: str | None = None
+    ):
         """
         Возвращает данные по последним торрентам
 
@@ -503,8 +530,8 @@ class AnimeMethod(BaseMethod):
     async def torrents_release_releaseId(
         self,
         releaseId: int,
-        include: Optional[str] = None,
-        exclude: Optional[str] = None,
+        include: str | None = None,
+        exclude: str | None = None,
     ):
         """
         Возвращает данные по последним торрентам
@@ -520,7 +547,9 @@ class AnimeMethod(BaseMethod):
         )
         return await self._api.get(endpoint, params)
 
-    async def torrents_rss(self, limit: Optional[int] = None, pk: Optional[str] = None):
+    async def torrents_rss(
+        self, limit: int | None = None, pk: str | None = None
+    ):
         """
         Возвращает данные по последним торрентам в виде XML документа
 
@@ -537,7 +566,7 @@ class AnimeMethod(BaseMethod):
         )
 
     async def torrents_rss_release_releaseId(
-        self, releaseId: int, pk: Optional[str] = None
+        self, releaseId: int, pk: str | None = None
     ):
         """
         Возвращает данные по торрентам релиза в виде RSS ленты (xml)
@@ -553,4 +582,6 @@ class AnimeMethod(BaseMethod):
         endpoint = self._api.build_endpoint_with_params(
             "/anime/torrents/rss/release/{releaseId}", releaseId=releaseId
         )
-        return await self._api.get(endpoint=endpoint, params=params, headers=headers)
+        return await self._api.get(
+            endpoint=endpoint, params=params, headers=headers
+        )

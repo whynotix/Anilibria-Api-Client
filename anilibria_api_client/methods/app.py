@@ -1,10 +1,13 @@
+
 from ._libria import BaseMethod
-from typing import Optional
 
 
 class AppMethod(BaseMethod):
     async def search_releases(
-        self, query: str, include: Optional[str] = None, exclude: Optional[str] = None
+        self,
+        query: str,
+        include: str | None = None,
+        exclude: str | None = None,
     ):
         """
         Возвращает данные по релизам, которые удовлетворяют поисковому запросу

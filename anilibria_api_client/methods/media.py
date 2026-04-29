@@ -1,10 +1,10 @@
+
 from ._libria import BaseMethod
-from typing import Optional
 
 
 class MediaMethod(BaseMethod):
     async def promotions(
-        self, include: Optional[str] = None, exclude: Optional[str] = None
+        self, include: str | None = None, exclude: str | None = None
     ):
         """
         Возвращает список промо-материалов или рекламные кампании в случайном порядке
@@ -18,9 +18,9 @@ class MediaMethod(BaseMethod):
 
     async def videos(
         self,
-        limit: Optional[int] = None,
-        include: Optional[str] = None,
-        exclude: Optional[str] = None,
+        limit: int | None = None,
+        include: str | None = None,
+        exclude: str | None = None,
     ):
         """
         Возвращает список последних видео-роликов

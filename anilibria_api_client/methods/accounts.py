@@ -1,8 +1,10 @@
-from ._libria import BaseMethod
-from ..models import ReleaseCollection, TimeCode
-from ..models.responses.accounts import *
+from typing import NoReturn
+
+from anilibria_api_client.models import ReleaseCollection, TimeCode
+from anilibria_api_client.models.responses.accounts import *
+
 from ._helper import validate_collection, validated_json_collection
-from typing import Optional, List, NoReturn
+from ._libria import BaseMethod
 
 
 class AccountsMethod(BaseMethod):
@@ -56,7 +58,9 @@ class AccountsMethod(BaseMethod):
 
         data = {"login": login, "password": password}
 
-        return await self._api.post("/accounts/users/auth/login", json_data=data)
+        return await self._api.post(
+            "/accounts/users/auth/login", json_data=data
+        )
 
     async def users_auth_logout(self) -> "UsersAuthLogoutResponse":
         """
@@ -73,7 +77,9 @@ class AccountsMethod(BaseMethod):
 
         :param provider: Провайдер социальной сети vk, google, patreon, discord (необходим)
         """
-        return await self._api.get(f"/accounts/users/auth/social/{provider}/login")
+        return await self._api.get(
+            f"/accounts/users/auth/social/{provider}/login"
+        )
 
     async def users_auth_social_authenticate(
         self, state: str
@@ -141,7 +147,9 @@ class AccountsMethod(BaseMethod):
         Возвращает список жанров в коллекциях текущего пользователя (auth need)
         """
 
-        return await self._api.get("/accounts/users/me/collections/references/genres")
+        return await self._api.get(
+            "/accounts/users/me/collections/references/genres"
+        )
 
     async def users_me_collections_references_types(
         self,
@@ -150,7 +158,9 @@ class AccountsMethod(BaseMethod):
         Возвращает список типов в коллекциях текущего пользователя (auth need)
         """
 
-        return await self._api.get("/accounts/users/me/collections/references/types")
+        return await self._api.get(
+            "/accounts/users/me/collections/references/types"
+        )
 
     async def users_me_collections_references_years(
         self,
@@ -159,9 +169,13 @@ class AccountsMethod(BaseMethod):
         Возвращает список годов в коллекциях текущего пользователя (auth need)
         """
 
-        return await self._api.get("/accounts/users/me/collections/references/years")
+        return await self._api.get(
+            "/accounts/users/me/collections/references/years"
+        )
 
-    async def users_me_collections_ids(self) -> "UsersMeCollectionsIdsResponse":
+    async def users_me_collections_ids(
+        self,
+    ) -> "UsersMeCollectionsIdsResponse":
         """
         Возвращает данные по идентификаторам релизов и типов коллекций авторизованного пользователя
         """
@@ -215,7 +229,7 @@ class AccountsMethod(BaseMethod):
         )
         return UsersMeCollectionsReleasesResponse(**result)
 
-    async def users_me_collections_add(self, release_ids: List[int]):
+    async def users_me_collections_add(self, release_ids: list[int]):
         """
         Добавляет релизы в избранное авторизованного пользователя
 
@@ -223,9 +237,11 @@ class AccountsMethod(BaseMethod):
         """
         params = [{"release_id": a} for a in release_ids]
 
-        return await self._api.post("/accounts/users/me/favorites", json_data=params)
+        return await self._api.post(
+            "/accounts/users/me/favorites", json_data=params
+        )
 
-    async def users_me_collections_delete(self, release_ids: List[int]):
+    async def users_me_collections_delete(self, release_ids: list[int]):
         """
         Удаляет релизы из избранного авторизованного пользователя
 
@@ -233,10 +249,12 @@ class AccountsMethod(BaseMethod):
         """
         params = [{"release_id": a} for a in release_ids]
 
-        return await self._api.delete("/accounts/users/me/favorites", json_data=params)
+        return await self._api.delete(
+            "/accounts/users/me/favorites", json_data=params
+        )
 
     async def users_me_profile(
-        self, include: Optional[str] = None, exclude: Optional[str] = None
+        self, include: str | None = None, exclude: str | None = None
     ):
         """
         Возвращает данные профиля авторизованного пользователя (auth need)
@@ -251,10 +269,10 @@ class AccountsMethod(BaseMethod):
 
     async def users_me_views_history(
         self,
-        page: Optional[int] = None,
-        limit: Optional[int] = None,
-        include: Optional[str] = None,
-        exclude: Optional[str] = None,
+        page: int | None = None,
+        limit: int | None = None,
+        include: str | None = None,
+        exclude: str | None = None,
     ):
         """
         Возвращает историю просмотров эпизодов авторизованного пользователя
@@ -264,19 +282,30 @@ class AccountsMethod(BaseMethod):
         :param include: Опционально. Список включаемых полей. Через запятую или множественные параметры. Поддерживается вложенность через точку.
         :param exclude: Опционально. Список исключаемых полей. Через запятую или множественные параметры. Поддерживается вложенность через точку. Приоритет над include
         """
-        params = {"page": page, "limit": limit, "include": include, "exclude": exclude}
-        return await self._api.get("/accounts/users/me/views/history", params=params)
+        params = {
+            "page": page,
+            "limit": limit,
+            "include": include,
+            "exclude": exclude,
+        }
+        return await self._api.get(
+            "/accounts/users/me/views/history", params=params
+        )
 
-    async def users_me_views_timecodes(self, since: Optional[str]):
+    async def users_me_views_timecodes(self, since: str | None):
         """
         Возвращает таймкоды по прогрессу просмотренных эпизодов
 
         :param since: Опционально. Возвращает только таймкоды, которые были добавлены после указанного времени (в iso формате). Example: 2025-05-12T07:20:50.52Z
         """
         params = {"since": since}
-        return await self._api.get("/accounts/users/me/views/timecodes", params=params)
+        return await self._api.get(
+            "/accounts/users/me/views/timecodes", params=params
+        )
 
-    async def users_me_views_timecodes_update(self, timecode_list: List[TimeCode]):
+    async def users_me_views_timecodes_update(
+        self, timecode_list: list[TimeCode]
+    ):
         """
         Обновляет таймкоды просмотренных эпизодов
 
@@ -288,7 +317,9 @@ class AccountsMethod(BaseMethod):
             "/accounts/users/me/views/timecodes", json_data=json
         )
 
-    async def users_me_views_timecodes_delete(self, episode_id_list: List[str]):
+    async def users_me_views_timecodes_delete(
+        self, episode_id_list: list[str]
+    ):
         """
         Удаляет данные по таймкодам просмотров для указанных эпизодов
 

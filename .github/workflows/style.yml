@@ -1,4 +1,4 @@
-name: Style ruff
+name: style ruff
 
 on:
   workflow_dispatch:

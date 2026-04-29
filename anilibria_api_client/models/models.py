@@ -1,5 +1,6 @@
-from pydantic import BaseModel as PreBaseModel, AwareDatetime, ConfigDict
-from typing import List
+
+from pydantic import AwareDatetime, ConfigDict
+from pydantic import BaseModel as PreBaseModel
 
 
 class BaseModel(PreBaseModel):
@@ -149,8 +150,8 @@ class ReleaseModel(BaseModel):
     added_in_watching_collection: int | None = None
     added_in_postponed_collection: int | None = None
     added_in_abandoned_collection: int | None = None
-    genres: List[GenresModel] | None = None
-    episodes: List[EpisodeModel] | None = None
+    genres: list[GenresModel] | None = None
+    episodes: list[EpisodeModel] | None = None
 
 
 class SortingModel(BaseModel):

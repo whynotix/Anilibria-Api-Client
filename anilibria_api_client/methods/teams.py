@@ -1,9 +1,11 @@
+
 from ._libria import BaseMethod
-from typing import Optional
 
 
 class TeamsMethod(BaseMethod):
-    async def get(self, include: Optional[str] = None, exclude: Optional[str] = None):
+    async def get(
+        self, include: str | None = None, exclude: str | None = None
+    ):
         """
         Возвращает список всех команд
 
@@ -15,7 +17,9 @@ class TeamsMethod(BaseMethod):
 
         return await self._api.get("/teams/", params=params)
 
-    async def roles(self, include: Optional[str] = None, exclude: Optional[str] = None):
+    async def roles(
+        self, include: str | None = None, exclude: str | None = None
+    ):
         """
         Возвращает список всех ролей в командах
 
@@ -27,7 +31,9 @@ class TeamsMethod(BaseMethod):
 
         return await self._api.get("/teams/roles", params=params)
 
-    async def users(self, include: Optional[str] = None, exclude: Optional[str] = None):
+    async def users(
+        self, include: str | None = None, exclude: str | None = None
+    ):
         """
         Возвращает список всех анилибрийцов с указанием команды и своих ролей
 

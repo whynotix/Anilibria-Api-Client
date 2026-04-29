@@ -1,12 +1,15 @@
-import m3u8_To_MP4
 import os  # Path / Makedir
+
 import aiofiles
+import m3u8_To_MP4
 
 from .api_client import AsyncAnilibriaAPI
 from .exceptions import AnilibriaException
 
 
-async def auth(api: AsyncAnilibriaAPI, login: str, password: str) -> AsyncAnilibriaAPI:
+async def auth(
+    api: AsyncAnilibriaAPI, login: str, password: str
+) -> AsyncAnilibriaAPI:
     """
     Используется для простой авторизации без использования методов одной строчкой
 
@@ -16,24 +19,28 @@ async def auth(api: AsyncAnilibriaAPI, login: str, password: str) -> AsyncAnilib
     :return: AsyncAnilibriaAPI
     """
     try:
-        res = await api.accounts.users_auth_login(login=login, password=password)
+        res = await api.accounts.users_auth_login(
+            login=login, password=password
+        )
 
         init_params = {
             "base_url": api.base_url,
             "proxy": api.proxy,
             "proxy_auth": api.proxy_auth,
-            "proxy_headers": api.proxy_headers.copy() if api.proxy_headers else None,
+            "proxy_headers": api.proxy_headers.copy()
+            if api.proxy_headers
+            else None,
         }
 
         init_params["authorization"] = f"Bearer {res.get('token')}"
 
         return AsyncAnilibriaAPI(**init_params)
-    except AnilibriaException as e:
+    except AnilibriaException:
         raise AnilibriaException("Auth error!")
 
 
 async def async_download(
-    url: str, output_path: str = None, filename: str = "output.mp4"
+    url: str, output_path: str | None = None, filename: str = "output.mp4"
 ):
     """
     Позволяет скачивать серию через URL (https://cache-rfn.libria.fun/videos/media/)
@@ -96,11 +103,10 @@ async def auto_paginate(api_function, limit: int = 100, *args, **kwargs):
     while True:
         response = await api_function(*args, page=page, limit=limit, **kwargs)
 
-        if response:
-            if response["data"]:
-                items = response.get("data")
-                for item in items:
-                    all_results.append(item)
+        if response and response["data"]:
+            items = response.get("data")
+            for item in items:
+                all_results.append(item)
 
         if len(response["data"]) < limit:
             break

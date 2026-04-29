@@ -1,18 +1,19 @@
 import pytest
 
 from anilibria_api_client.api_client import AsyncAnilibriaAPI
-from anilibria_api_client.exceptions import AnilibriaException
 from anilibria_api_client.models import (
-    ReleaseCollection,
+    AgeRating,
     CollectionType,
     ContentType,
-    AgeRating,
+    ReleaseCollection,
     UsersMeCollectionsReleasesResponse,
 )
 
 
 @pytest.mark.asyncio
-async def test_releases_get_post(anilibria_api_client: AsyncAnilibriaAPI) -> None:
+async def test_releases_get_post(
+    anilibria_api_client: AsyncAnilibriaAPI,
+) -> None:
     releases_get = (
         await anilibria_api_client.accounts.users_me_collections_releases_get(
             release_collection=ReleaseCollection(

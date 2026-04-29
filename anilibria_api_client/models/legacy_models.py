@@ -4,7 +4,7 @@ Last edited in 0.2.2 version
 """
 
 from enum import Enum
-from typing import List
+
 from pydantic import BaseModel
 
 
@@ -99,15 +99,15 @@ class Release(BaseModel):
     page: int | None = None
     limit: int | None = None
     genres: str | None = None
-    types: List[ContentType] | None = None
-    seasons: List[Seasons] | None = None
+    types: list[ContentType] | None = None
+    seasons: list[Seasons] | None = None
     from_year: int | None = None
     to_year: int | None = None
     search: str | None = None
     sorting: SortType | None = None
-    age_ratings: List[AgeRating] | None = None
-    publish_statuses: List[PublishStatusesType] | None = None
-    production_statuses: List[ProductionStatusesType] | None = None
+    age_ratings: list[AgeRating] | None = None
+    publish_statuses: list[PublishStatusesType] | None = None
+    production_statuses: list[ProductionStatusesType] | None = None
     include: str | None = None
     exclude: str | None = None
 
@@ -125,10 +125,10 @@ class ReleaseCollection(BaseModel):
     page: int | None = None
     limit: int | None = None
     genres: str | None = None
-    types: List[ContentType] | None = None
+    types: list[ContentType] | None = None
     years: str | None = None
     search: str | None = None
-    age_ratings: List[AgeRating] | None = None
+    age_ratings: list[AgeRating] | None = None
     include: str | None = None
     exclude: str | None = None
 

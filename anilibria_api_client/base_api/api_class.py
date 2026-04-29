@@ -1,8 +1,9 @@
+from typing import Any
+from urllib.parse import quote, urlencode, urljoin
+
 import aiohttp
 
-from typing import Dict, Any, Optional, Union
-from urllib.parse import urlencode, urljoin, quote
-from ..exceptions import AnilibriaValidationException, AnilibriaException
+from ..exceptions import AnilibriaException, AnilibriaValidationException
 
 
 class AsyncBaseAPI:
@@ -14,12 +15,12 @@ class AsyncBaseAPI:
     def __init__(
         self,
         base_url: str,
-        headers: Optional[Dict[str, str]] = None,
+        headers: dict[str, str] | None = None,
         timeout: int = 10,
-        proxy: Optional[str] = None,
-        proxy_auth: Optional[aiohttp.BasicAuth] = None,
-        proxy_headers: Optional[Dict[str, str]] = None,
-    ):
+        proxy: str | None = None,
+        proxy_auth: aiohttp.BasicAuth | None = None,
+        proxy_headers: dict[str, str] | None = None,
+    ) -> None:
         """
         Инициализация асинхронного API клиента.
 
@@ -36,7 +37,7 @@ class AsyncBaseAPI:
         self.proxy = proxy
         self.proxy_auth = proxy_auth
         self.proxy_headers = proxy_headers
-        self.session: Optional[aiohttp.ClientSession] = None
+        self.session: aiohttp.ClientSession | None = None
         self._own_session = False
 
     async def __aenter__(self):
@@ -56,7 +57,7 @@ class AsyncBaseAPI:
             self._own_session = True
         return self.session
 
-    async def _close_session(self):
+    async def _close_session(self) -> None:
         """Закрывает сессию если она принадлежит этому экземпляру"""
         if self._own_session and self.session:
             await self.session.close()
@@ -65,9 +66,9 @@ class AsyncBaseAPI:
 
     def set_proxy(
         self,
-        proxy: Optional[str] = None,
-        proxy_auth: Optional[aiohttp.BasicAuth] = None,
-        proxy_headers: Optional[Dict[str, str]] = None,
+        proxy: str | None = None,
+        proxy_auth: aiohttp.BasicAuth | None = None,
+        proxy_headers: dict[str, str] | None = None,
     ):
         """
         Установка прокси параметров.
@@ -80,7 +81,9 @@ class AsyncBaseAPI:
         self.proxy_auth = proxy_auth
         self.proxy_headers = proxy_headers
 
-    def create_proxy_auth(self, username: str, password: str) -> aiohttp.BasicAuth:
+    def create_proxy_auth(
+        self, username: str, password: str
+    ) -> aiohttp.BasicAuth:
         """
         Создает объект аутентификации для прокси.
 
@@ -91,7 +94,7 @@ class AsyncBaseAPI:
         return aiohttp.BasicAuth(username, password)
 
     @staticmethod
-    def build_query_string(params: Dict[str, Any]) -> str:
+    def build_query_string(params: dict[str, Any]) -> str:
         """
         Создает query string из параметров.
 
@@ -109,7 +112,7 @@ class AsyncBaseAPI:
 
     @staticmethod
     def build_url(
-        base_url: str, endpoint: str, params: Optional[Dict[str, Any]] = None
+        base_url: str, endpoint: str, params: dict[str, Any] | None = None
     ) -> str:
         """
         Строит полный URL с параметрами.
@@ -133,7 +136,9 @@ class AsyncBaseAPI:
         """
         return quote(str(param))
 
-    def build_endpoint_with_params(self, endpoint_template: str, **path_params) -> str:
+    def build_endpoint_with_params(
+        self, endpoint_template: str, **path_params
+    ) -> str:
         """
         Строит endpoint с подставленными параметрами пути.
 
@@ -141,22 +146,24 @@ class AsyncBaseAPI:
         :param path_params: Параметры для подстановки в путь
         :return: Готовый endpoint с подставленными параметрами
         """
-        encoded_params = {k: self.encode_path_param(v) for k, v in path_params.items()}
+        encoded_params = {
+            k: self.encode_path_param(v) for k, v in path_params.items()
+        }
         return endpoint_template.format(**encoded_params)
 
     async def _request(
         self,
         method: str,
         endpoint: str,
-        params: Optional[Dict[str, Any]] = None,
-        data: Optional[Union[Dict[str, Any], str, bytes]] = None,
-        json_data: Optional[Dict[str, Any]] = None,
-        headers: Optional[Dict[str, str]] = None,
-        proxy: Optional[str] = None,
-        proxy_auth: Optional[aiohttp.BasicAuth] = None,
-        proxy_headers: Optional[Dict[str, str]] = None,
+        params: dict[str, Any] | None = None,
+        data: dict[str, Any] | str | bytes | None = None,
+        json_data: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
+        proxy: str | None = None,
+        proxy_auth: aiohttp.BasicAuth | None = None,
+        proxy_headers: dict[str, str] | None = None,
         **kwargs,
-    ) -> Union[Dict[str, Any], str, bytes]:
+    ) -> dict[str, Any] | str | bytes:
         """
         Базовый метод для отправки HTTP-запросов.
 
@@ -197,17 +204,16 @@ class AsyncBaseAPI:
                     error_data = await response.json()
                     if error_data.get("errors"):
                         raise AnilibriaValidationException(error_data)
-                    else:
-                        raise AnilibriaValidationException(
-                            {"error": "Ошибка валидации входных параметров"}
-                        )
+                    raise AnilibriaValidationException(
+                        {"error": "Ошибка валидации входных параметров"}
+                    )
 
                 response.raise_for_status()
 
                 content_type = response.headers.get("Content-Type", "")
                 if "application/json" in content_type:
                     return await response.json()
-                elif "application/x-bittorrent" in content_type:
+                if "application/x-bittorrent" in content_type:
                     return await response.read()
 
                 return await response.text()
@@ -236,12 +242,12 @@ class AsyncBaseAPI:
     async def get(
         self,
         endpoint: str,
-        params: Optional[Dict[str, Any]] = None,
-        headers: Optional[Dict[str, str]] = None,
-        proxy: Optional[str] = None,
-        proxy_auth: Optional[aiohttp.BasicAuth] = None,
+        params: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
+        proxy: str | None = None,
+        proxy_auth: aiohttp.BasicAuth | None = None,
         **kwargs,
-    ) -> Union[Dict[str, Any], str, bytes]:
+    ) -> dict[str, Any] | str | bytes:
         """
         Отправка GET запроса.
 
@@ -266,13 +272,13 @@ class AsyncBaseAPI:
     async def post(
         self,
         endpoint: str,
-        data: Optional[Union[Dict[str, Any], str, bytes]] = None,
-        json_data: Optional[Dict[str, Any]] = None,
-        headers: Optional[Dict[str, str]] = None,
-        proxy: Optional[str] = None,
-        proxy_auth: Optional[aiohttp.BasicAuth] = None,
+        data: dict[str, Any] | str | bytes | None = None,
+        json_data: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
+        proxy: str | None = None,
+        proxy_auth: aiohttp.BasicAuth | None = None,
         **kwargs,
-    ) -> Union[Dict[str, Any], str, bytes]:
+    ) -> dict[str, Any] | str | bytes:
         """
         Отправка POST запроса.
 

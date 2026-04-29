@@ -1,6 +1,8 @@
-from pydantic import BaseModel as PreBaseModel, AwareDatetime, ConfigDict
-from typing import Dict, List, Union, Tuple
-from ..models import *
+
+from pydantic import AwareDatetime, ConfigDict
+from pydantic import BaseModel as PreBaseModel
+
+from anilibria_api_client.models.models import *
 
 
 class BaseModel(PreBaseModel):
@@ -34,63 +36,63 @@ class UsersAuthSocialAuthenticateResponse(BaseModel):
 
 
 class UsersMeCollectionsReferencesAgeRatingsResponse(BaseModel):
-    age_ratings: List[AgeRatingsModel] | None = None
+    age_ratings: list[AgeRatingsModel] | None = None
 
 
 class UsersMeCollectionsReferencesTypesResponse(BaseModel):
-    types: List[TypesModel] | None = None
+    types: list[TypesModel] | None = None
 
 
 class UsersMeCollectionsReferencesYearsResponse(BaseModel):
-    years: List[int] | None = None
+    years: list[int] | None = None
 
 
 class UsersMeCollectionsIdsResponse(BaseModel):
-    data: List[Tuple[int, str]] | None = None
+    data: list[tuple[int, str]] | None = None
 
 
 class UsersMeCollectionsReferencesGenresResponse(BaseModel):
-    genres: List[GenresModel] | None = None
+    genres: list[GenresModel] | None = None
 
 
 class UsersMeCollectionsReleasesResponse(MetaModel):
-    data: List[ReleaseModel] | None = None
+    data: list[ReleaseModel] | None = None
 
 
 class UsersMeCollectionsResponse(BaseModel):
-    data: List[Tuple[int, str]] | None = None
+    data: list[tuple[int, str]] | None = None
 
 
 class UsersMeFavoritesReferencesAgeRatingsResponse(BaseModel):
-    data: List[AgeRatingsModel] | None = None
+    data: list[AgeRatingsModel] | None = None
 
 
 class UsersMeFavoritesReferencesGenresResponse(BaseModel):
-    data: List[GenresModel] | None = None
+    data: list[GenresModel] | None = None
 
 
 class UsersMeFavoritesReferencesSortingResponse(BaseModel):
-    data: List[SortingModel] | None = None
+    data: list[SortingModel] | None = None
 
 
 class UsersMeFavoritesReferencesTypesResponse(BaseModel):
-    data: List[TypesModel] | None = None
+    data: list[TypesModel] | None = None
 
 
 class UsersMeFavoritesReferencesYearsResponse(BaseModel):
-    years: List[int] | None = None
+    years: list[int] | None = None
 
 
 class UsersMeFavoritesIdsResponse(BaseModel):
-    ids: List[int] | None = None
+    ids: list[int] | None = None
 
 
 class UsersMeFavoritesReleasesResponse(MetaModel):
-    data: List[ReleaseModel] | None = None
+    data: list[ReleaseModel] | None = None
 
 
 class UsersMeFavoritesResponse(MetaModel):
-    data: List[int] | None = None
+    data: list[int] | None = None
 
 
 class UsersMeProfileResponse(BaseModel):
@@ -106,13 +108,13 @@ class UsersMeProfileResponse(BaseModel):
 
 
 class UsersMeViewsHistoryResponse(MetaModel):
-    data: List[HistoryModel]
+    data: list[HistoryModel]
 
 
 class UsersMeViewsTimecodesResponse(BaseModel):
-    data: List[List[Union[str, int, bool]]] | None = None
+    data: list[list[str | int | bool]] | None = None
 
-    def get_episode_timecodes(self) -> List[dict]:
+    def get_episode_timecodes(self) -> list[dict]:
         """Вывод в удобном формате"""
         return [
             {

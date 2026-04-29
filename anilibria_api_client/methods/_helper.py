@@ -1,16 +1,18 @@
-from typing import Dict, Any
-from ..models import (
+from typing import Any
+
+from anilibria_api_client.models import (
     AgeRating,
-    SortType,
     ContentType,
-    Seasons,
-    PublishStatusesType,
     ProductionStatusesType,
+    PublishStatusesType,
+    Release,
+    ReleaseCollection,
+    Seasons,
+    SortType,
 )
-from ..models import ReleaseCollection, Release
 
 
-async def validate_filters(params: Release) -> Dict[str, Any]:
+async def validate_filters(params: Release) -> dict[str, Any]:
     """
     Валидация параметров фильтров в формате f["название_переменной"]
 
@@ -54,13 +56,21 @@ async def validate_filters(params: Release) -> Dict[str, Any]:
 
     # Валидация from_year
     if "from_year" in filters and filters["from_year"] is not None:
-        if not isinstance(filters["from_year"], int) or filters["from_year"] < 1900:
-            raise ValueError("from_year должен быть целым числом не менее 1900")
+        if (
+            not isinstance(filters["from_year"], int)
+            or filters["from_year"] < 1900
+        ):
+            raise ValueError(
+                "from_year должен быть целым числом не менее 1900"
+            )
         validated_filters["f[from_year]"] = filters["from_year"]
 
     # Валидация to_year
     if "to_year" in filters and filters["to_year"] is not None:
-        if not isinstance(filters["to_year"], int) or filters["to_year"] < 1900:
+        if (
+            not isinstance(filters["to_year"], int)
+            or filters["to_year"] < 1900
+        ):
             raise ValueError("to_year должен быть целым числом не менее 1900")
         validated_filters["f[to_year]"] = filters["to_year"]
 
@@ -82,20 +92,31 @@ async def validate_filters(params: Release) -> Dict[str, Any]:
             isinstance(a, AgeRating) for a in filters["age_ratings"]
         ):
             raise ValueError("age_ratings должен быть списком AgeRating")
-        validated_filters["f[age_ratings]"] = [a.value for a in filters["age_ratings"]]
+        validated_filters["f[age_ratings]"] = [
+            a.value for a in filters["age_ratings"]
+        ]
 
     # Валидация publish_statuses (список PublishStatusesType)
-    if "publish_statuses" in filters and filters["publish_statuses"] is not None:
+    if (
+        "publish_statuses" in filters
+        and filters["publish_statuses"] is not None
+    ):
         if not isinstance(filters["publish_statuses"], list) or not all(
-            isinstance(p, PublishStatusesType) for p in filters["publish_statuses"]
+            isinstance(p, PublishStatusesType)
+            for p in filters["publish_statuses"]
         ):
-            raise ValueError("publish_statuses должен быть списком PublishStatusesType")
+            raise ValueError(
+                "publish_statuses должен быть списком PublishStatusesType"
+            )
         validated_filters["f[publish_statuses]"] = [
             p.value for p in filters["publish_statuses"]
         ]
 
     # Валидация production_statuses (список ProductionStatusesType)
-    if "production_statuses" in filters and filters["production_statuses"] is not None:
+    if (
+        "production_statuses" in filters
+        and filters["production_statuses"] is not None
+    ):
         if not isinstance(filters["production_statuses"], list) or not all(
             isinstance(p, ProductionStatusesType)
             for p in filters["production_statuses"]
@@ -110,7 +131,7 @@ async def validate_filters(params: Release) -> Dict[str, Any]:
     return validated_filters
 
 
-async def create_filters_from_release(release: Release) -> Dict[str, Any]:
+async def create_filters_from_release(release: Release) -> dict[str, Any]:
     """
     Создает фильтры в формате API из объекта Release
 
@@ -153,16 +174,20 @@ async def create_filters_from_release(release: Release) -> Dict[str, Any]:
 
     # publish_statuses
     if release.publish_statuses is not None:
-        filters["publish_statuses"] = [p.value for p in release.publish_statuses]
+        filters["publish_statuses"] = [
+            p.value for p in release.publish_statuses
+        ]
 
     # production_statuses
     if release.production_statuses is not None:
-        filters["production_statuses"] = [p.value for p in release.production_statuses]
+        filters["production_statuses"] = [
+            p.value for p in release.production_statuses
+        ]
 
     return {"f": filters}
 
 
-async def validate_collection(params: ReleaseCollection) -> Dict[str, Any]:
+async def validate_collection(params: ReleaseCollection) -> dict[str, Any]:
     """
     Валидация параметров фильтров для ReleaseCollection в формате f["название_переменной"]
 
@@ -209,12 +234,16 @@ async def validate_collection(params: ReleaseCollection) -> Dict[str, Any]:
             isinstance(a, AgeRating) for a in filters["age_ratings"]
         ):
             raise ValueError("age_ratings должен быть списком AgeRating")
-        validated_filters["f[age_ratings]"] = [a.value for a in filters["age_ratings"]]
+        validated_filters["f[age_ratings]"] = [
+            a.value for a in filters["age_ratings"]
+        ]
 
     return validated_filters
 
 
-async def validated_json_collection(release: ReleaseCollection) -> Dict[str, Any]:
+async def validated_json_collection(
+    release: ReleaseCollection,
+) -> dict[str, Any]:
     """
     Создает фильтры в формате API из объекта ReleaseCollection
 
