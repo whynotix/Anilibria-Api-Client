@@ -1,0 +1,31 @@
+name: Install poetry and dependencies
+
+inputs:
+  python-version:
+    description: "Python version."
+    required: false
+    default: "3.14"
+
+runs:
+  using: composite
+  steps:
+    - name: "Install poetry"
+      run: |
+        pipx install poetry
+      shell: bash
+
+    - name: "Cache poetry virtualenv"
+      uses: actions/cache@v3
+      with:
+        path: .venv
+        key: venv-${{ runner.os }}-${{ inputs.python-version }}-${{
+          hashFiles('**/poetry.lock') }}
+        restore-keys: |
+          venv-${{ runner.os }}-${{ inputs.python-version }}-
+
+    - name: "Install dependencies"
+      run: |
+        poetry config virtualenvs.in-project true
+        poetry env use ${{ inputs.python-version }}
+        poetry install --all-extras --with dev
+      shell: bash
