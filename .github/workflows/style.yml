@@ -1,0 +1,99 @@
+name: Auto style with Ruff and create PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch_name:
+        description: "Название ветки для авто-стиля"
+        required: false
+        default: "auto-style/ruff-fixes"
+
+jobs:
+  auto-style-and-pr:
+    name: "Apply Ruff style & create PR"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Install dependencies
+        run: |
+          poetry install --with dev
+
+      - name: Create new branch from dev
+        run: |
+          git fetch origin dev
+          git checkout -b ${{ github.event.inputs.branch_name || 'auto-style/ruff-fixes' }} origin/dev
+
+      - name: Apply Ruff fixes
+        run: |
+          poetry run ruff check --fix .
+          poetry run ruff format .
+
+      - name: Check for changes
+        id: git-diff
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "no-changes=true" >> $GITHUB_OUTPUT
+            echo "No changes"
+          else
+            echo "no-changes=false" >> $GITHUB_OUTPUT
+            git diff --cached --stat
+          fi
+
+      - name: Commit changes
+        if: steps.git-diff.outputs.no-changes == 'false'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -m "style: apply ruff auto-fixes and formatting"
+
+      - name: Push changes
+        if: steps.git-diff.outputs.no-changes == 'false'
+        run: |
+          git push origin HEAD:${{ github.event.inputs.branch_name || 'auto-style/ruff-fixes' }} --force
+
+      - name: Create Pull Request
+        if: steps.git-diff.outputs.no-changes == 'false'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.event.inputs.branch_name || 'auto-style/ruff-fixes' }}
+          base: dev
+          title: "style: apply ruff auto-fixes"
+          body: |
+            ## Автоматические исправления стиля Ruff
+
+            Этот PR был автоматически создан для применения стилевых исправлений Ruff.
+
+            ### Изменения:
+            - Применены автоматические исправления Ruff (`ruff check --fix`)
+            - Отформатирован код согласно Ruff formatter (`ruff format`)
+          labels: |
+            automated pr
+            style
+          draft: false
+
+      - name: Report no changes
+        if: steps.git-diff.outputs.no-changes == 'true'
+        run: |
+          echo "No changes"
