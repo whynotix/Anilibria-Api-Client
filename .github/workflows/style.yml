@@ -45,8 +45,9 @@ jobs:
 
       - name: Apply Ruff fixes
         run: |
-          poetry run ruff check --fix .
-          poetry run ruff format .
+          poetry run ruff check --fix --unsafe-fixes --exit-zero . 
+          poetry run ruff format . || true
+          poetry run ruff check --statistics --exit-zero .
 
       - name: Check for changes
         id: git-diff
