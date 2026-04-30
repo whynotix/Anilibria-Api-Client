@@ -13,7 +13,7 @@ license = {text = "MIT"}
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "aiohttp==3.13.5",
+    "aiohttp==3.13.4",
     "aiofiles==24.1.0",
     "pydantic==2.13.3",
     "m3u8-To-MP4==0.1.11",
