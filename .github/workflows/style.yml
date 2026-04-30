@@ -89,7 +89,7 @@ jobs:
             - Применены автоматические исправления Ruff (`ruff check --fix`)
             - Отформатирован код согласно Ruff formatter (`ruff format`)
           labels: |
-            automated pr
+            automated-pr
             style
           draft: false
 
