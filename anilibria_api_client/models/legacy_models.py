@@ -82,7 +82,7 @@ class TimeCode(BaseModel):
     accounts.users_me_views_timecodes_update
     """
 
-    time: int
+    time: int | float
     is_watched: bool
     release_episode_id: str
 

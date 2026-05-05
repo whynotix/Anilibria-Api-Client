@@ -1,17 +1,18 @@
 import pytest
 
 from anilibria_api_client.api_client import AsyncAnilibriaAPI
-from anilibria_api_client.models import (
+from anilibria_api_client.models.legacy_models import (
     AgeRating,
     CollectionType,
     ContentType,
     ReleaseCollection,
-    UsersMeCollectionsReleasesResponse,
+    TimeCode,
 )
+from anilibria_api_client.models.responses import *
 
 
 @pytest.mark.asyncio
-async def test_releases_get_post(
+async def test_col_releases_get_post(
     anilibria_api_client: AsyncAnilibriaAPI,
 ) -> None:
     releases_get = (
@@ -48,3 +49,73 @@ async def test_releases_get_post(
 
     assert isinstance(releases_get, UsersMeCollectionsReleasesResponse)
     assert isinstance(releases_post, UsersMeCollectionsReleasesResponse)
+
+
+@pytest.mark.asyncio
+async def test_timecodes(
+    anilibria_api_client: AsyncAnilibriaAPI,
+) -> None:
+    response = await anilibria_api_client.accounts.users_me_views_timecodes()
+    await anilibria_api_client.accounts.users_me_views_timecodes_delete(
+        episode_id_list=["9fba7e92-1a4f-4712-962f-b0a683009e66"]
+    )
+    await anilibria_api_client.accounts.users_me_views_timecodes_update(
+        timecode_list=[
+            TimeCode(
+                time=500.92,
+                is_watched=False,
+                release_episode_id="9fba7e92-1a4f-4712-962f-b0a683009e66",
+            )
+        ]
+    )
+    response_after = (
+        await anilibria_api_client.accounts.users_me_views_timecodes()
+    )
+
+    assert response.get_episode_timecodes()
+    assert isinstance(response, UsersMeViewsTimecodesResponse)
+
+    # Sort before assert (да, да, нужно)
+    sorted_response = sorted(response, key=lambda x: x[0])
+    sorted_response_after = sorted(response_after, key=lambda x: x[0])
+    assert sorted_response == sorted_response_after
+
+
+@pytest.mark.asyncio
+async def test_me_profile(
+    anilibria_api_client: AsyncAnilibriaAPI,
+) -> None:
+    response = await anilibria_api_client.accounts.users_me_profile()
+
+    assert isinstance(response, UsersMeProfileResponse)
+
+
+@pytest.mark.asyncio
+async def test_all_references(
+    anilibria_api_client: AsyncAnilibriaAPI,
+) -> None:
+    fav_age_ratings = await anilibria_api_client.accounts.users_me_favorites_references_age_ratings()
+    fav_genres = await anilibria_api_client.accounts.users_me_favorites_references_genres()
+    fav_sorting = await anilibria_api_client.accounts.users_me_favorites_references_sorting()
+    fav_types = await anilibria_api_client.accounts.users_me_favorites_references_types()
+    fav_years = await anilibria_api_client.accounts.users_me_favorites_references_years()
+
+    col_age_ratings = await anilibria_api_client.accounts.users_me_collections_references_age_ratings()
+    col_genres = await anilibria_api_client.accounts.users_me_collections_references_genres()
+    col_types = await anilibria_api_client.accounts.users_me_collections_references_types()
+    col_years = await anilibria_api_client.accounts.users_me_collections_references_years()
+
+    assert isinstance(
+        fav_age_ratings, UsersMeFavoritesReferencesAgeRatingsResponse
+    )
+    assert isinstance(fav_genres, UsersMeFavoritesReferencesGenresResponse)
+    assert isinstance(fav_sorting, UsersMeFavoritesReferencesSortingResponse)
+    assert isinstance(fav_types, UsersMeFavoritesReferencesTypesResponse)
+    assert isinstance(fav_years, UsersMeFavoritesReferencesYearsResponse)
+
+    assert isinstance(
+        col_age_ratings, UsersMeCollectionsReferencesAgeRatingsResponse
+    )
+    assert isinstance(col_genres, UsersMeCollectionsReferencesGenresResponse)
+    assert isinstance(col_types, UsersMeCollectionsReferencesTypesResponse)
+    assert isinstance(col_years, UsersMeCollectionsReferencesYearsResponse)

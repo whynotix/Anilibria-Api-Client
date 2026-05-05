@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional, Dict, Union
 from urllib.parse import quote, urlencode, urljoin
 
 import aiohttp
@@ -300,4 +300,25 @@ class AsyncBaseAPI:
             proxy=proxy,
             proxy_auth=proxy_auth,
             **kwargs,
+        )
+
+    async def delete(
+        self,
+        endpoint: str,
+        headers: Optional[Dict[str, str]] = None,
+        json_data: Optional[Dict[str, Any]] = None,
+        **kwargs,
+    ) -> Union[Dict[str, Any], str, bytes]:
+        """
+        Отправка DELETE запроса.
+
+        :param endpoint: Конечная точка API
+        :param headers: Дополнительные заголовки
+        :param json_data: JSON тело запроса
+        :param kwargs: Дополнительные аргументы для aiohttp
+        :return: Ответ от API
+        """
+
+        return await self._request(
+            "DELETE", endpoint, json_data=json_data, headers=headers, **kwargs
         )

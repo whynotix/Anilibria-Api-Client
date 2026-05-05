@@ -1,4 +1,3 @@
-
 from ._libria import BaseMethod
 
 

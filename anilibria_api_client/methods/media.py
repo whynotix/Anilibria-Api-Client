@@ -1,11 +1,11 @@
-
 from ._libria import BaseMethod
+from ..models.responses import *
 
 
 class MediaMethod(BaseMethod):
     async def promotions(
         self, include: str | None = None, exclude: str | None = None
-    ):
+    ) -> "PromotionsResponse":
         """
         Возвращает список промо-материалов или рекламные кампании в случайном порядке
 
@@ -14,14 +14,15 @@ class MediaMethod(BaseMethod):
         """
         params = {"include": include, "exclude": exclude}
 
-        return await self._api.get("/media/promotions", params=params)
+        response = await self._api.get("/media/promotions", params=params)
+        return PromotionsResponse(data=response)
 
     async def videos(
         self,
         limit: int | None = None,
         include: str | None = None,
         exclude: str | None = None,
-    ):
+    ) -> "VideosResponse":
         """
         Возвращает список последних видео-роликов
 
@@ -31,4 +32,5 @@ class MediaMethod(BaseMethod):
         """
         params = {"limit": limit, "include": include, "exclude": exclude}
 
-        return await self._api.get("/media/videos", params=params)
+        response = await self._api.get("/media/videos", params=params)
+        return VideosResponse(data=response)
