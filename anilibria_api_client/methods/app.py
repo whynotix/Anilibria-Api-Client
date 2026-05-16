@@ -1,5 +1,6 @@
+from anilibria_api_client.models.responses.app import *
+
 from ._libria import BaseMethod
-from ..models.responses.app import *
 
 
 class AppMethod(BaseMethod):

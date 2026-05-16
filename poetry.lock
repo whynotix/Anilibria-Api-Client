@@ -1980,4 +1980,4 @@ docs = ["furo", "readthedocs-sphinx-search", "sphinx", "sphinx-autodoc-typehints
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "45a32068aa685ff379238c14e91af38c836bb5c2e00efd14eee7c978324750e5"
+content-hash = "c7e5e6d930f944170a432d1fe92d89e85fd9aef01a7b3e59273a16c6c975c03b"

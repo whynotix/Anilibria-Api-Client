@@ -1,4 +1,4 @@
-from typing import Any, Optional, Dict, Union
+from typing import Any
 from urllib.parse import quote, urlencode, urljoin
 
 import aiohttp
@@ -305,10 +305,10 @@ class AsyncBaseAPI:
     async def delete(
         self,
         endpoint: str,
-        headers: Optional[Dict[str, str]] = None,
-        json_data: Optional[Dict[str, Any]] = None,
+        headers: dict[str, str] | None = None,
+        json_data: dict[str, Any] | None = None,
         **kwargs,
-    ) -> Union[Dict[str, Any], str, bytes]:
+    ) -> dict[str, Any] | str | bytes:
         """
         Отправка DELETE запроса.
 

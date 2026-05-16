@@ -1,5 +1,6 @@
+from anilibria_api_client.models.responses import *
+
 from ._libria import BaseMethod
-from ..models.responses import *
 
 
 class MediaMethod(BaseMethod):

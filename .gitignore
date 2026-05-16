@@ -12,3 +12,4 @@ _generated
 .env
 *ruff*
 .vscode
+.coverage

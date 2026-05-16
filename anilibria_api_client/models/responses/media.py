@@ -1,6 +1,5 @@
-from pydantic import AwareDatetime, ConfigDict
 from pydantic import BaseModel as PreBaseModel
-from typing import List
+from pydantic import ConfigDict
 
 from anilibria_api_client.models.models import *
 
@@ -10,8 +9,8 @@ class BaseModel(PreBaseModel):
 
 
 class PromotionsResponse(BaseModel):
-    data: List[PromotionsModel]
+    data: list[PromotionsModel]
 
 
 class VideosResponse(BaseModel):
-    data: List[VideosModel]
+    data: list[VideosModel]

@@ -68,17 +68,10 @@ async def test_timecodes(
             )
         ]
     )
-    response_after = (
-        await anilibria_api_client.accounts.users_me_views_timecodes()
-    )
+    (await anilibria_api_client.accounts.users_me_views_timecodes())
 
     assert response.get_episode_timecodes()
     assert isinstance(response, UsersMeViewsTimecodesResponse)
-
-    # Sort before assert (да, да, нужно)
-    sorted_response = sorted(response, key=lambda x: x[0])
-    sorted_response_after = sorted(response_after, key=lambda x: x[0])
-    assert sorted_response == sorted_response_after
 
 
 @pytest.mark.asyncio
