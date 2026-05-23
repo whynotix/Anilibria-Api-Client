@@ -49,6 +49,11 @@ autodoc_mock_imports = [
     "anilibria_api_client.methods.app",
     "anilibria_api_client.methods.media",
     "anilibria_api_client.methods.teams",
+    "anilibria_api_client.helper",
+    "anilibria_api_client.models",
+    "anilibria_api_client.models.legacy_models",
+    "anilibria_api_client.models.models",
+    "anilibria_api_client.models.responses"
 ]
 
 autodoc_member_order = "groupwise"
@@ -59,8 +64,8 @@ napoleon_numpy_docstring = False
 
 # -- Project information -----------------------------------------------------
 project = "anilibria-api-client"
-copyright = f"{datetime.datetime.now().year}, semen-bol"
-author = "semen-bol"
+copyright = f"{datetime.datetime.now().year}, whynotix"
+author = "whynotix"
 release = "0.2.3"
 version = "0.1"
 
