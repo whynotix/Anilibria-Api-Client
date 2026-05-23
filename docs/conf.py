@@ -1,20 +1,7 @@
 # Taken from https://github.com/interactions-py/library/blob/stable/docs/conf.py
-# Configuration file for the Sphinx documentation builder.
-#
-# This file only contains a selection of the most common options. For a full
-# list see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
-
-# -- Path setup --------------------------------------------------------------
-
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-#
 import datetime
 import os
 import sys
-
 
 sys.path.insert(0, os.path.abspath(".."))
 
@@ -22,6 +9,10 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.viewcode",
     "sphinx.ext.napoleon",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.autosectionlabel",
+    "hoverxref.extension",
+    "sphinx_search.extension",
 ]
 
 autodoc_default_options = {
@@ -31,6 +22,7 @@ autodoc_default_options = {
     "special-members": "__init__",
     "inherited-members": True,
     "show-inheritance": True,
+    "member-order": "bysource",
 }
 
 autodoc_mock_imports = [
@@ -39,21 +31,6 @@ autodoc_mock_imports = [
     "ffmpeg",
     "ffmpeg.asyncio",
     "typing",
-    "anilibria_api_client.base_api",
-    "anilibria_api_client.methods",
-    "anilibria_api_client.methods._helper",
-    "anilibria_api_client.methods._libria",
-    "anilibria_api_client.methods.accounts",
-    "anilibria_api_client.methods.ads",
-    "anilibria_api_client.methods.anime",
-    "anilibria_api_client.methods.app",
-    "anilibria_api_client.methods.media",
-    "anilibria_api_client.methods.teams",
-    "anilibria_api_client.helper",
-    "anilibria_api_client.models",
-    "anilibria_api_client.models.legacy_models",
-    "anilibria_api_client.models.models",
-    "anilibria_api_client.models.responses"
 ]
 
 autodoc_member_order = "groupwise"
