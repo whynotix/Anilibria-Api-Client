@@ -26,11 +26,9 @@ autodoc_default_options = {
 }
 
 autodoc_mock_imports = [
-    "aiohttp",
     "websockets",
     "ffmpeg",
     "ffmpeg.asyncio",
-    "typing",
 ]
 
 autodoc_member_order = "groupwise"
