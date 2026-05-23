@@ -2,7 +2,7 @@ name: PR
 
 on:
   pull_request:
-    branches: [ main, dev ]
+    branches: [main, dev]
     paths:
       - "anilibria_api_client/**"
       - "tests/**"
@@ -33,12 +33,14 @@ jobs:
         id: cached-poetry-dependencies
         with:
           path: .venv
-          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{
+          key:
+            venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{
             hashFiles('**/poetry.lock') }}
 
       - name: Install dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: |
+          poetry lock
           poetry install --with dev
 
       - name: Create .env file

@@ -68,7 +68,7 @@ class AccountsMethod(BaseMethod):
         """
         Деавторизовать пользователя
         """
-        response = await self._api.post("/accounts/users/auth/login")
+        response = await self._api.post("/accounts/users/auth/logout")
         return UsersAuthLogoutResponse(**response)
 
     async def users_auth_social_login(
@@ -404,7 +404,7 @@ class AccountsMethod(BaseMethod):
         params = [{"release_id": a} for a in release_ids]
 
         response = await self._api.delete(
-            "/accounts/users/me/collections", json_data=params
+            "/accounts/users/me/favorites", json_data=params
         )
         return UsersMeFavoritesResponse(data=response)
 
