@@ -1567,15 +1567,15 @@ sphinxcontrib-serializinghtml = ">=1.1.9"
 
 [[package]]
 name = "sphinx-autodoc-typehints"
-version = "3.10.2"
+version = "3.13.0"
 description = "Type hints (PEP 484) support for the Sphinx autodoc extension"
 optional = true
 python-versions = ">=3.12"
 groups = ["main"]
 markers = "extra == \"docs\""
 files = [
-    {file = "sphinx_autodoc_typehints-3.10.2-py3-none-any.whl", hash = "sha256:2d1bcac8f62b8d0d210f6ca44b8e016e314d07cc8c30d0512cf6986a0b042b26"},
-    {file = "sphinx_autodoc_typehints-3.10.2.tar.gz", hash = "sha256:34db651eb14343ba16bd9c03e0f5093971f9bbd3cc6b0a1470adecd578940b9c"},
+    {file = "sphinx_autodoc_typehints-3.13.0-py3-none-any.whl", hash = "sha256:d71c388c865f3bedc1f32416febb0f8886b3051a4cd8bd8677e64b8b65c9b475"},
+    {file = "sphinx_autodoc_typehints-3.13.0.tar.gz", hash = "sha256:59eb4fe26f71ccd7a8f10caadddcb3c3b31df7016f91bda546da2a333bae4e12"},
 ]
 
 [package.dependencies]
@@ -1987,5 +1987,6 @@ docs = ["furo", "readthedocs-sphinx-search", "sphinx", "sphinx-autodoc-typehints
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
+content-hash = "e71eab86a063a066e8a3ab3ffa0d192404da22bbf9bd0ebcef7c43bf42a9d6b9"
 content-hash = "6c10c3073d6db0729d1898e85da5917acca58d089b0277a19072ffa84a1ad5be"
 content-hash = "b589a610685dd02c24cf88d38489a940811d31b393dce80ec3aa54bcc36227eb"
