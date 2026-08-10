@@ -46,7 +46,76 @@ jobs:
       - name: Create .env file
         run: |
           echo "ANILIBRIA_API_TOKEN=${{ secrets.ANILIBRIA_API_TOKEN }}" > .env
+          echo "LOGIN=${{ secrets.LOGIN }}" >> .env
+          echo "PASSWORD=${{ secrets.PASSWORD }}" >> .env
 
       - name: Run tests with pytest
         run: |
           poetry run pytest -q tests/ -s
+  pre-pr-bump-lock-file:
+    name: Bump lock file
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
+
+      - name: Load cached venv
+        uses: actions/cache@v4
+        id: cached-poetry-dependencies
+        with:
+          path: .venv
+          key:
+            venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{
+            hashFiles('**/poetry.lock') }}
+
+      - name: Install dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: |
+          poetry lock
+          poetry install --with dev
+
+      - name: Check if poetry.lock needs update
+        id: check-lock
+        run: |
+          CURRENT_HASH=$(sha256sum poetry.lock | cut -d' ' -f1)
+
+          poetry lock --no-update
+
+          NEW_HASH=$(sha256sum poetry.lock | cut -d' ' -f1)
+
+          if [ "$CURRENT_HASH" != "$NEW_HASH" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Lock file needs update"
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "Lock file is up to date"
+          fi
+
+      - name: Update poetry.lock
+        if: steps.check-lock.outputs.changed == 'true'
+        run: |
+          poetry lock
+
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          git add poetry.lock
+          git commit -m "chore: update poetry.lock [skip ci]"
+          git push origin HEAD:${{ github.head_ref }}

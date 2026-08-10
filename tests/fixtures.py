@@ -11,6 +11,13 @@ from anilibria_api_client.base_api.api_class import AsyncBaseAPI
 dotenv.load_dotenv()
 
 
+def get_auth_params() -> list[str, str]:
+    login, password = os.getenv("LOGIN"), os.getenv("PASSWORD")
+    if not login or not password:
+        raise ValueError("Not LOGIN or PASSWORD in .env file")
+
+    return [login, password]
+
 @pytest_asyncio.fixture()
 async def anilibria_api_client() -> typing.AsyncGenerator[AsyncAnilibriaAPI]:
     token = os.getenv("ANILIBRIA_API_TOKEN")
