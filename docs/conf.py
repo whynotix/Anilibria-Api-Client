@@ -1,16 +1,4 @@
 # Taken from https://github.com/interactions-py/library/blob/stable/docs/conf.py
-# Configuration file for the Sphinx documentation builder.
-#
-# This file only contains a selection of the most common options. For a full
-# list see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
-
-# -- Path setup --------------------------------------------------------------
-
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-#
 import datetime
 import os
 import sys
@@ -22,6 +10,10 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.viewcode",
     "sphinx.ext.napoleon",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.autosectionlabel",
+    "hoverxref.extension",
+    "sphinx_search.extension",
 ]
 
 autodoc_default_options = {
@@ -31,24 +23,13 @@ autodoc_default_options = {
     "special-members": "__init__",
     "inherited-members": True,
     "show-inheritance": True,
+    "member-order": "bysource",
 }
 
 autodoc_mock_imports = [
-    "aiohttp",
     "websockets",
     "ffmpeg",
     "ffmpeg.asyncio",
-    "typing",
-    "anilibria_api_client.base_api",
-    "anilibria_api_client.methods",
-    "anilibria_api_client.methods._helper",
-    "anilibria_api_client.methods._libria",
-    "anilibria_api_client.methods.accounts",
-    "anilibria_api_client.methods.ads",
-    "anilibria_api_client.methods.anime",
-    "anilibria_api_client.methods.app",
-    "anilibria_api_client.methods.media",
-    "anilibria_api_client.methods.teams",
 ]
 
 autodoc_member_order = "groupwise"
@@ -59,8 +40,8 @@ napoleon_numpy_docstring = False
 
 # -- Project information -----------------------------------------------------
 project = "anilibria-api-client"
-copyright = f"{datetime.datetime.now().year}, semen-bol"
-author = "semen-bol"
+copyright = f"{datetime.datetime.now().year}, whynotix"
+author = "whynotix"
 release = "0.2.3"
 version = "0.1"
 
@@ -124,7 +105,7 @@ html_theme_options = {
     "footer_icons": [
         {
             "name": "GitHub",
-            "url": "https://github.com/semen-bol/Anilibria-Api-Client/",
+            "url": "https://github.com/whynotix/Anilibria-Api-Client/",
             "html": """
                 <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>

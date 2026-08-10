@@ -50,7 +50,7 @@ Report for any issues [here](https://github.com/semen-bol/Anilibria-Api-Client/i
 
 ### Contributing
 
-We allow contributing! Read the [CODE_OF_CONDUCT.md](https://github.com/semen-bol/Anilibria-Api-Client/blob/main/CODE_OF_CONDUCT.md)
+We approve contibuting and wait your first pull request
 
 ## License 📄
 

@@ -33,6 +33,6 @@ API Docs
 
 .. toctree::
     :maxdepth: 2
-    :caption: Types (codegen)
+    :caption: Responses
 
-    types.rst
+    responses.rst

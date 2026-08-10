@@ -2,7 +2,7 @@ name: PR
 
 on:
   pull_request:
-    branches: [ main, dev ]
+    branches: [main, dev]
     paths:
       - "anilibria_api_client/**"
       - "tests/**"
@@ -16,35 +16,58 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - name: Setup Poetry and dependencies
+        uses: ./.github/actions/setup-poetry
         with:
           python-version: "3.13"
-
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-          installer-parallel: true
-
-      - name: Load cached venv
-        uses: actions/cache@v4
-        id: cached-poetry-dependencies
-        with:
-          path: .venv
-          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{
-            hashFiles('**/poetry.lock') }}
-
-      - name: Install dependencies
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: |
-          poetry install --with dev
+          install-dev: "true"
 
       - name: Create .env file
+        env:
+          ANILIBRIA_API_TOKEN: ${{ secrets.ANILIBRIA_API_TOKEN }}
+          LOGIN: ${{ secrets.LOGIN }}
+          PASSWORD: ${{ secrets.PASSWORD }}
         run: |
-          echo "ANILIBRIA_API_TOKEN=${{ secrets.ANILIBRIA_API_TOKEN }}" > .env
+          echo "ANILIBRIA_API_TOKEN=$ANILIBRIA_API_TOKEN" > .env
+          echo "LOGIN=$LOGIN" >> .env
+          echo "PASSWORD=$PASSWORD" >> .env
 
       - name: Run tests with pytest
         run: |
           poetry run pytest -q tests/ -s
+
+  pre-pr-bump-lock-file:
+    name: Bump lock file
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Poetry and dependencies
+        uses: ./.github/actions/setup-poetry
+        with:
+          python-version: "3.13"
+          install-dev: "true"
+
+      - name: Update poetry.lock
+        run: |
+          poetry lock
+
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          if git diff --quiet poetry.lock; then
+            echo "No changes in poetry.lock"
+          else
+            git add poetry.lock
+            git commit -m "chore: update poetry.lock [skip ci]"
+            git push origin HEAD:${{ github.head_ref }}
+          fi

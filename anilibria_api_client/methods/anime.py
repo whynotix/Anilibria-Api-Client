@@ -1,4 +1,3 @@
-
 from anilibria_api_client.models import Release
 
 from ._helper import create_filters_from_release, validate_filters
