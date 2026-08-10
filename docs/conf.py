@@ -42,7 +42,7 @@ napoleon_numpy_docstring = False
 project = "anilibria-api-client"
 copyright = f"{datetime.datetime.now().year}, whynotix"
 author = "whynotix"
-release = "0.2.3"
+release = "0.2.4"
 version = "0.1"
 
 # -- General configuration ---------------------------------------------------

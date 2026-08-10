@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "anilibria-api-client"
-version = "0.2.3"
+version = "0.2.4"
 description = "Python async API wrapper for AniLibria Swagger"
 authors = [
     {name = "whynotix", email = "syoma.bolotov@bk.ru"}
@@ -47,7 +47,7 @@ dev = [
 
 [tool.poetry]
 name = "anilibria_api_client"
-version = "0.2.3"
+version = "0.2.4"
 description = "Client for Anilibria API v1.0"
 authors = ["whynotix <syoma.bolotov@bk.ru>"]
 license = "MIT"
