@@ -301,3 +301,24 @@ class AsyncBaseAPI:
             proxy_auth=proxy_auth,
             **kwargs,
         )
+
+    async def delete(
+        self,
+        endpoint: str,
+        headers: dict[str, str] | None = None,
+        json_data: dict[str, Any] | None = None,
+        **kwargs,
+    ) -> dict[str, Any] | str | bytes:
+        """
+        Отправка DELETE запроса.
+
+        :param endpoint: Конечная точка API
+        :param headers: Дополнительные заголовки
+        :param json_data: JSON тело запроса
+        :param kwargs: Дополнительные аргументы для aiohttp
+        :return: Ответ от API
+        """
+
+        return await self._request(
+            "DELETE", endpoint, json_data=json_data, headers=headers, **kwargs
+        )

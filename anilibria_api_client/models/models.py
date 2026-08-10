@@ -1,4 +1,3 @@
-
 from pydantic import AwareDatetime, ConfigDict
 from pydantic import BaseModel as PreBaseModel
 
@@ -187,3 +186,47 @@ class HistoryModel(BaseModel):
     updated_at: AwareDatetime | None = None
     release_episode_id: str | None = None
     release_episode: ReleaseEpisodeModel
+
+
+class RequestModel(BaseModel):
+    ip: str | None = None
+    country: str | None = None
+    iso_code: str | None = None
+    timezone: str | None = None
+
+
+class PromotionsModel(BaseModel):
+    id: str | None = None
+    url: str | None = None
+    url_label: str | None = None
+    image: ImageModel | None = None
+    title: str | None = None
+    description: str | None = None
+    is_ad: bool | None = None
+    ad_edid: str | None = None
+    ad_origin: str | None = None
+    release: ReleaseModel | None = None
+    has_overlay: bool | None = None
+
+
+class OriginModel(BaseModel):
+    id: str | None = None
+    url: str | None = None
+    type: TypesModel | None = None
+    title: str | None = None
+    description: str | None = None
+    is_announce: bool | None = None
+
+
+class VideosModel(BaseModel):
+    id: int | None = None
+    url: str | None = None
+    title: str | None = None
+    views: int | None = None
+    image: ImageModel | None = None
+    comments: int | None = None
+    video_id: str | None = None
+    created_at: AwareDatetime | None = None
+    updated_at: AwareDatetime | None = None
+    is_announce: bool | None = None
+    origin: OriginModel | None = None

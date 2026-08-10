@@ -5,6 +5,7 @@ import m3u8_To_MP4
 
 from .api_client import AsyncAnilibriaAPI
 from .exceptions import AnilibriaException
+from .models.responses import *
 
 
 async def auth(
@@ -32,9 +33,8 @@ async def auth(
             else None,
         }
 
-        init_params["authorization"] = f"Bearer {res.get('token')}"
-
-        return AsyncAnilibriaAPI(**init_params)
+        if isinstance(res, UsersAuthLoginResponse):
+            return AsyncAnilibriaAPI(token=res.token, **init_params)
     except AnilibriaException:
         raise AnilibriaException("Auth error!")
 

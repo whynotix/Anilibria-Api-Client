@@ -1,3 +1,4 @@
+from anilibria_api_client.models.responses.app import *
 
 from ._libria import BaseMethod
 
@@ -8,7 +9,7 @@ class AppMethod(BaseMethod):
         query: str,
         include: str | None = None,
         exclude: str | None = None,
-    ):
+    ) -> "SearchReleasesResponse":
         """
         Возвращает данные по релизам, которые удовлетворяют поисковому запросу
 
@@ -18,10 +19,12 @@ class AppMethod(BaseMethod):
         """
         params = {"query": query, "include": include, "exclude": exclude}
 
-        return await self._api.get("/app/search/releases", params=params)
+        response = await self._api.get("/app/search/releases", params=params)
+        return SearchReleasesResponse(data=response)
 
-    async def status(self):
+    async def status(self) -> "StatusResponse":
         """
         Возвращает информацию о статусе API
         """
-        return await self._api.get("/app/status")
+        response = await self._api.get("/app/status")
+        return StatusResponse(**response)

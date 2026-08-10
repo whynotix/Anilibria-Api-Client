@@ -1,4 +1,3 @@
-
 from pydantic import AwareDatetime, ConfigDict
 from pydantic import BaseModel as PreBaseModel
 
@@ -36,11 +35,11 @@ class UsersAuthSocialAuthenticateResponse(BaseModel):
 
 
 class UsersMeCollectionsReferencesAgeRatingsResponse(BaseModel):
-    age_ratings: list[AgeRatingsModel] | None = None
+    data: list[AgeRatingsModel] | None = None
 
 
 class UsersMeCollectionsReferencesTypesResponse(BaseModel):
-    types: list[TypesModel] | None = None
+    data: list[TypesModel] | None = None
 
 
 class UsersMeCollectionsReferencesYearsResponse(BaseModel):
@@ -52,7 +51,7 @@ class UsersMeCollectionsIdsResponse(BaseModel):
 
 
 class UsersMeCollectionsReferencesGenresResponse(BaseModel):
-    genres: list[GenresModel] | None = None
+    data: list[GenresModel] | None = None
 
 
 class UsersMeCollectionsReleasesResponse(MetaModel):
@@ -80,11 +79,11 @@ class UsersMeFavoritesReferencesTypesResponse(BaseModel):
 
 
 class UsersMeFavoritesReferencesYearsResponse(BaseModel):
-    years: list[int] | None = None
+    data: list[int] | None = None
 
 
 class UsersMeFavoritesIdsResponse(BaseModel):
-    ids: list[int] | None = None
+    data: list[int] | None = None
 
 
 class UsersMeFavoritesReleasesResponse(MetaModel):
@@ -112,7 +111,7 @@ class UsersMeViewsHistoryResponse(MetaModel):
 
 
 class UsersMeViewsTimecodesResponse(BaseModel):
-    data: list[list[str | int | bool]] | None = None
+    data: list[list[str | int | float | bool]] | None = None
 
     def get_episode_timecodes(self) -> list[dict]:
         """Вывод в удобном формате"""

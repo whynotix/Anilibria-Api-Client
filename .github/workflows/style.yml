@@ -36,45 +36,25 @@ jobs:
 
       - name: Install dependencies
         run: |
+          poetry lock
           poetry install --with dev
 
-      - name: Create new branch from dev
-        run: |
-          git fetch origin dev
-          git checkout -b ${{ github.event.inputs.branch_name || 'auto-style/ruff-fixes' }} origin/dev
-
       - name: Apply Ruff fixes
+        id: ruff
         run: |
           poetry run ruff check --fix --unsafe-fixes --exit-zero . 
           poetry run ruff format . || true
           poetry run ruff check --statistics --exit-zero .
 
-      - name: Check for changes
-        id: git-diff
-        run: |
-          git add -A
-          if git diff --cached --quiet; then
-            echo "no-changes=true" >> $GITHUB_OUTPUT
-            echo "No changes"
+          # Проверяем, есть ли изменения
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
           else
-            echo "no-changes=false" >> $GITHUB_OUTPUT
-            git diff --cached --stat
+            echo "changes=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Commit changes
-        if: steps.git-diff.outputs.no-changes == 'false'
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git commit -m "style: apply ruff auto-fixes and formatting"
-
-      - name: Push changes
-        if: steps.git-diff.outputs.no-changes == 'false'
-        run: |
-          git push origin HEAD:${{ github.event.inputs.branch_name || 'auto-style/ruff-fixes' }} --force
-
       - name: Create Pull Request
-        if: steps.git-diff.outputs.no-changes == 'false'
+        if: steps.ruff.outputs.changes == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -92,9 +72,12 @@ jobs:
           labels: |
             automated-pr
             style
-          draft: false
+          commit-message: "style: apply ruff auto-fixes and formatting"
+          committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+          author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+          delete-branch: true
 
       - name: Report no changes
-        if: steps.git-diff.outputs.no-changes == 'true'
+        if: steps.ruff.outputs.changes == 'false'
         run: |
-          echo "No changes"
+          echo "No changes to apply"
