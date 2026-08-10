@@ -1,5 +1,8 @@
 # Anilibria-Api-Client
 
+> [!WARNING]
+> This repository has been archived. The last supported version (provided AS IS) is v0.2.4. If this version does not work, try v0.2.2.
+
 [![pypi](https://img.shields.io/badge/anilibria_api_client_on_PyPi-blue)](https://pypi.org/project/anilibria-api-client)
 ![version](https://img.shields.io/badge/Version-0.2.3-blue)
 ![licence](https://img.shields.io/badge/License-MIT-green)
