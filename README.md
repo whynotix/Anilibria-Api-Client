@@ -1,12 +1,7 @@
 # Anilibria-Api-Client
 
-> [!WARNING]
-> This repository has been archived. The last supported version (provided AS IS) is v0.2.4. If this version does not work, try v0.2.2.
 
-[![pypi](https://img.shields.io/badge/anilibria_api_client_on_PyPi-blue)](https://pypi.org/project/anilibria-api-client)
-![version](https://img.shields.io/badge/Version-0.2.4-blue)
-![licence](https://img.shields.io/badge/License-MIT-green)
-![python](https://img.shields.io/badge/Python-3.13%2B-blue)
+[![pypi](https://img.shields.io/pypi/v/anilibria-api-client.svg)](https://pypi.org/project/anilibria-api-client/) [![LICENSE](https://img.shields.io/github/license/whynotix/anilibria-api-client)](https://github.com/whynotix/anilibria-api-types/LICENSE) [![Python](https://img.shields.io/pypi/pyversions/anilibria-api-client.svg)](https://pypi.org/project/anilibria-api-client/)
 
 > [!CAUTION]  
 > **It is not an official wrapper.** [Official AniLibria's Swagger](https://anilibria.top/api/docs/v1)
@@ -49,12 +44,9 @@ async def main():
 
 ### Issues
 
-Report for any issues [here](https://github.com/semen-bol/Anilibria-Api-Client/issues)
+Report for any issues [here](https://github.com/whynotix/Anilibria-Api-Client/issues)
 
 ### Contributing
 
 We approve contibuting and wait your first pull request
 
-## License 📄
-
-Anilibria-Api-Client is [MIT](https://github.com/semen-bol/Anilibria-Api-Client/blob/main/LICENSE) licenced.
