@@ -1,66 +1,55 @@
 import logging
-from typing import Any
-
 import aiohttp
 
-from .base_api.api_class import AsyncBaseAPI
-from .methods import (
-    AccountsMethod,
-    AdsMethod,
-    AnimeMethod,
-    AppMethod,
-    MediaMethod,
-    TeamsMethod,
-)
+from typing import Any, TYPE_CHECKING
+if TYPE_CHECKING:
+    from anilibria_api_client.base_api.api_class import API
+
+from anilibria_api_types.methods import AccountsMethod, AnimeMethod, AppMethod, MediaMethod, TeamsMethod
 
 
-logging.basicConfig(level=logging.ERROR)
-
-
-class AsyncAnilibriaAPI(AsyncBaseAPI):
+class AsyncAnilibriaAPI:
     """
     Асинхронный клиент для работы с AnilibriaAPI, базируется на AsyncBaseAPI (base_api/api_class.py)
     """
 
     def __init__(
         self,
-        base_url: str = "https://anilibria.top/api/v1",
+        base_url: str = "https://aniliberty.top/api/v1/", # Edited because previous url is not working 
         token: str | None = None,
-        proxy: str | None = None,
-        proxy_auth: aiohttp.BasicAuth | None = None,
-        proxy_headers: dict[str, str] | None = None,
+        timeout: int | None = None,
+        api: 'API | None' = None
     ) -> None:
         """
         Инициализация асинхронного API клиента.
 
         :param base_url: Базовый URL API
         :param token: Токен для авторизации (Bearer)
-
-        :param proxy: URL прокси-сервера (http://proxy:port или https://proxy:port)
-        :param proxy_auth: Аутентификация для прокси (BasicAuth)
-        :param proxy_headers: Заголовки для прокси
+        :param timeout: Таймаут для запроса к API
+        :param api: Класс API или свой класс
         """
-
         headers = {
             "Content-Type": "application/json",
         }
         if token is not None:
             headers["Authorization"] = f"Bearer {token}"
 
-        super().__init__(
-            base_url=base_url,
-            headers=headers,
-            proxy=proxy,
-            proxy_auth=proxy_auth,
-            proxy_headers=proxy_headers,
+        self.api = ( 
+            api
+            if api is not None
+            else API(
+                base_url=base_url,
+                headers=headers,
+                timeout=timeout
+            )
         )
 
-        self.accounts = AccountsMethod(api=self)
-        self.ads = AdsMethod(api=self)
-        self.anime = AnimeMethod(api=self)
-        self.app = AppMethod(api=self)
-        self.media = MediaMethod(api=self)
-        self.teams = TeamsMethod(api=self)
+        self.accounts = AccountsMethod(api=self.api)
+        self.ads = AdsMethod(api=self.api)
+        self.anime = AnimeMethod(api=self.api)
+        self.app = AppMethod(api=self.api)
+        self.media = MediaMethod(api=self.api)
+        self.teams = TeamsMethod(api=self.api)
 
     async def execute(
         self,
@@ -83,7 +72,7 @@ class AsyncAnilibriaAPI(AsyncBaseAPI):
         :return: Ответ от API
         """
 
-        return await self._request(
+        return await self.api.request(
             method,
             endpoint,
             data=data,

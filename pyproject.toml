@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "anilibria-api-client"
-version = "0.2.4"
+version = "1.0.0rc1"
 description = "Python async API wrapper for AniLibria Swagger"
 authors = [
-    {name = "whynotix", email = "syoma.bolotov@bk.ru"}
+    {name = "whynotix", email = "semenbolotov414@gmail.com"}
 ]
 license = {text = "MIT"}
 readme = "README.md"
@@ -17,6 +17,9 @@ dependencies = [
     "aiofiles==24.1.0",
     "pydantic==2.13.3",
     "m3u8-To-MP4==0.1.11",
+]
+classifiers = [
+    "Programming Language :: Python :: 3.13",
 ]
 
 [project.urls]
@@ -47,9 +50,9 @@ dev = [
 
 [tool.poetry]
 name = "anilibria_api_client"
-version = "0.2.4"
-description = "Client for Anilibria API v1.0"
-authors = ["whynotix <syoma.bolotov@bk.ru>"]
+version = "1.0.0rc1"
+description = "Python async API wrapper for AniLibria Swagger"
+authors = ["whynotix <semenbolotov414@gmail.com>"]
 license = "MIT"
 package-mode=false
 

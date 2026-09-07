@@ -3,9 +3,8 @@ import os  # Path / Makedir
 import aiofiles
 import m3u8_To_MP4
 
-from .api_client import AsyncAnilibriaAPI
-from .exceptions import AnilibriaException
-from .models.responses import *
+from anilibria_api_client.api_client import AsyncAnilibriaAPI
+from anilibria_api_types.errors import ValidationError
 
 
 async def auth(
@@ -33,10 +32,10 @@ async def auth(
             else None,
         }
 
-        if isinstance(res, UsersAuthLoginResponse):
+        if isinstance(res):
             return AsyncAnilibriaAPI(token=res.token, **init_params)
-    except AnilibriaException:
-        raise AnilibriaException("Auth error!")
+    except ValidationError:
+        raise ValidationError("Auth error!")
 
 
 async def async_download(

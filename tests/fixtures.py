@@ -5,7 +5,7 @@ import dotenv
 import pytest_asyncio
 
 from anilibria_api_client.api_client import AsyncAnilibriaAPI
-from anilibria_api_client.base_api.api_class import AsyncBaseAPI
+from anilibria_api_client.base_api.api_class import API
 
 
 dotenv.load_dotenv()
@@ -29,7 +29,7 @@ async def anilibria_api_client() -> typing.AsyncGenerator[AsyncAnilibriaAPI]:
 
 
 @pytest_asyncio.fixture()
-async def base_api_client() -> typing.AsyncGenerator[AsyncBaseAPI]:
+async def base_api_client() -> typing.AsyncGenerator[API]:
     token = os.getenv("ANILIBRIA_API_TOKEN")
     headers = {}
 
@@ -39,7 +39,7 @@ async def base_api_client() -> typing.AsyncGenerator[AsyncBaseAPI]:
     headers["Content-Type"] = "application/json"
     headers["Authorization"] = f"Bearer {token}"
 
-    async with AsyncBaseAPI(
+    async with API(
         base_url="https://anilibria.top/api/v1", headers=headers
     ) as api:
         yield api

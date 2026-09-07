@@ -6,20 +6,16 @@ import aiohttp
 from ..exceptions import AnilibriaException, AnilibriaValidationException
 
 
-class AsyncBaseAPI:
+class API:
     """
-    Асинхронный базовый класс для работы с API.
+    Асинхронный класс для работы с API.
     Предоставляет основные методы для отправки HTTP-запросов и работы с URL.
     """
-
     def __init__(
         self,
         base_url: str,
         headers: dict[str, str] | None = None,
         timeout: int = 10,
-        proxy: str | None = None,
-        proxy_auth: aiohttp.BasicAuth | None = None,
-        proxy_headers: dict[str, str] | None = None,
     ) -> None:
         """
         Инициализация асинхронного API клиента.
@@ -27,16 +23,10 @@ class AsyncBaseAPI:
         :param base_url: Базовый URL API
         :param headers: Заголовки по умолчанию для всех запросов
         :param timeout: Таймаут запросов в секундах
-        :param proxy: URL прокси-сервера (http://proxy:port или https://proxy:port)
-        :param proxy_auth: Аутентификация для прокси (BasicAuth)
-        :param proxy_headers: Заголовки для прокси
         """
         self.base_url = base_url.rstrip("/")
         self.headers = headers or {}
         self.timeout = aiohttp.ClientTimeout(total=timeout)
-        self.proxy = proxy
-        self.proxy_auth = proxy_auth
-        self.proxy_headers = proxy_headers
         self.session: aiohttp.ClientSession | None = None
         self._own_session = False
 
@@ -64,94 +54,7 @@ class AsyncBaseAPI:
             self.session = None
             self._own_session = False
 
-    def set_proxy(
-        self,
-        proxy: str | None = None,
-        proxy_auth: aiohttp.BasicAuth | None = None,
-        proxy_headers: dict[str, str] | None = None,
-    ):
-        """
-        Установка прокси параметров.
-
-        :param proxy: URL прокси-сервера
-        :param proxy_auth: Аутентификация для прокси
-        :param proxy_headers: Заголовки для прокси
-        """
-        self.proxy = proxy
-        self.proxy_auth = proxy_auth
-        self.proxy_headers = proxy_headers
-
-    def create_proxy_auth(
-        self, username: str, password: str
-    ) -> aiohttp.BasicAuth:
-        """
-        Создает объект аутентификации для прокси.
-
-        :param username: Имя пользователя
-        :param password: Пароль
-        :return: Объект BasicAuth
-        """
-        return aiohttp.BasicAuth(username, password)
-
-    @staticmethod
-    def build_query_string(params: dict[str, Any]) -> str:
-        """
-        Создает query string из параметров.
-
-        :param params: Словарь параметров
-        :return: Строка вида ?key1=value1&key2=value2
-        """
-        if not params:
-            return ""
-
-        filtered_params = {k: v for k, v in params.items() if v is not None}
-        if not filtered_params:
-            return ""
-
-        return "?" + urlencode(filtered_params, doseq=True)
-
-    @staticmethod
-    def build_url(
-        base_url: str, endpoint: str, params: dict[str, Any] | None = None
-    ) -> str:
-        """
-        Строит полный URL с параметрами.
-
-        :param base_url: Базовый URL
-        :param endpoint: Конечная точка
-        :param params: Параметры запроса
-        :return: Полный URL с query-параметрами
-        """
-        url = urljoin(base_url + "/", endpoint.lstrip("/"))
-        if params:
-            url += AsyncBaseAPI.build_query_string(params)
-        return url
-
-    def encode_path_param(self, param: Any) -> str:
-        """
-        Кодирует параметр для использования в пути URL.
-
-        :param param: Параметр для кодирования
-        :return: Закодированная строка
-        """
-        return quote(str(param))
-
-    def build_endpoint_with_params(
-        self, endpoint_template: str, **path_params
-    ) -> str:
-        """
-        Строит endpoint с подставленными параметрами пути.
-
-        :param endpoint_template: Шаблон endpoint (например: '/users/{user_id}/posts/{post_id}')
-        :param path_params: Параметры для подстановки в путь
-        :return: Готовый endpoint с подставленными параметрами
-        """
-        encoded_params = {
-            k: self.encode_path_param(v) for k, v in path_params.items()
-        }
-        return endpoint_template.format(**encoded_params)
-
-    async def _request(
+    async def request(
         self,
         method: str,
         endpoint: str,
@@ -259,7 +162,7 @@ class AsyncBaseAPI:
         :param kwargs: Дополнительные аргументы для aiohttp
         :return: Ответ от API
         """
-        return await self._request(
+        return await self.request(
             "GET",
             endpoint,
             params=params,
@@ -291,7 +194,7 @@ class AsyncBaseAPI:
         :param kwargs: Дополнительные аргументы для aiohttp
         :return: Ответ от API
         """
-        return await self._request(
+        return await self.request(
             "POST",
             endpoint,
             data=data,
@@ -319,6 +222,6 @@ class AsyncBaseAPI:
         :return: Ответ от API
         """
 
-        return await self._request(
+        return await self.request(
             "DELETE", endpoint, json_data=json_data, headers=headers, **kwargs
         )
